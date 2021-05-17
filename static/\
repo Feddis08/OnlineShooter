@@ -1,0 +1,24 @@
+GameServer = {
+	default : 0,
+
+	start : function(){
+		setInterval(
+			() => { this.check() },
+			10
+		);
+	},
+
+	check : function(){
+		console.log("Checking...");
+		console.log(this.kugeln);
+		this.kugeln.forEach(function(kugel, index){
+			kugel.goX();
+		})
+		if (this.default == 1){
+			Kugel.distroy();
+		}
+	},
+
+	 kugeln : [],
+}
+GameServer.start();
