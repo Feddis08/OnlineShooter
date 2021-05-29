@@ -14,3 +14,21 @@
   background: black;
   overflow: hidden;
 }
+#chat-window {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid black;
+  background: whitesmoke;
+}
+#chat {
+  width: 175px;
+  height: 300px;
+  border: 1px solid black;
+  background: whitesmoke;
+  overflow: auto;
+}
+
+input:focus {
+  background: green;
+}

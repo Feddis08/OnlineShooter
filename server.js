@@ -9,6 +9,13 @@ var server = app.listen(port, function () {
 app.use(express.static("static"));
 var io = socket(server);
 
+var message = {
+  name: "",
+  id: "",
+  content: "",
+  fromServer: false,
+};
+
 io.on("connection", (socket) => {
   let id = socket.id;
   socket.on("join", (playerName) => {
@@ -18,15 +25,38 @@ io.on("connection", (socket) => {
     y = 400;
     const player = new Entity(id, playerName, "player", x, y);
     GameServer.users.push(player);
-    //    console.log("join", player);
+    console.log("[Server]: user joined:", playerName);
+    message.name = playerName;
+    message.content = "joined the game";
+    io.emit("Chat", message);
+    message.id = socket.id;
+    message.fromServer = true;
     //    console.log(GameServer.users);
     io.emit("response", GameServer.users);
   });
   socket.on("request", (action) => {
-    console.log("action", id, action);
+    //console.log("action", id, action);
     GameServer.users.forEach((user, index) => {
       if (user.id == socket.id) {
         user.action = action;
+      }
+    });
+  });
+  socket.on("chat", (message) => {
+    GameServer.users.forEach((user, index) => {
+      if (socket.id == user.id) {
+        console.log("[Chat]:", user.name, "says:", message.content);
+        message.name = user.name;
+        message.id = user.id;
+        message.fromServer = false;
+        io.emit("Chat", message);
+        console.log(
+          "[Chat]: send: ",
+          message.content,
+          "to",
+          GameServer.users.lenght,
+          "users"
+        );
       }
     });
   });
@@ -43,13 +73,19 @@ GameServer = {
   },
   gameServer: () => {
     GameServer.users.forEach((user, index) => {
+      if (GameServer.users.lenght == 10) {
+        GameServer.users = [];
+        const player = new Entity("asdfasdf", "wand", "player", 350, 400);
+        console.log("roboot");
+      }
       if (user.action !== "idle") {
         user.checkMove(user.action);
       }
       if (GameServer.change == true) {
-        user.action = false;
+        user.action = "idle";
         io.emit("response", GameServer.users);
         GameServer.change = false;
+        //console.log(GameServer.change);
       }
     });
   },

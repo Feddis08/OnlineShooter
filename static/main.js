@@ -24,6 +24,7 @@ keyHandles = () => {
       case "ArrowDown":
       case "ArrowRight":
       case "ArrowLeft":
+        //Server.chat("next move: " + evt.code);
         Server.socket.emit("request", evt.code);
         break;
     }
@@ -34,20 +35,42 @@ keyHandles = () => {
 };
 keyHandles();
 
+class message {
+  content = "";
+  id = "";
+  name = "";
+  fromServer = false;
+}
+
+send = () => {
+  message.content = document.querySelector("#chatInput").value;
+  Server.socket.emit("chat", message);
+};
+
 const Server = {
   url: "http://10.0.0.118:25545",
   //url: "http://feddis08.ddns.net:80",
   socket: null,
+  chat(text) {
+    const chat = document.querySelector("#chat");
+    chat.innerHTML = text + "<br>" + chat.innerHTML;
+    console.log("asdf>>>", text);
+  },
   start(name) {
     this.socket = io.connect(this.url);
     this.socket.on("response", (objects) => {
+      //this.chat("updating spielfeld");
       draw(objects);
     });
+    this.socket.on("Chat", (message) => {
+      console.log(message);
+      this.chat("[" + message.name + "]:", message.content);
+    });
     this.socket.on("accept", (data) => {
-      console.log("accepted");
+      this.chat("accepted");
     });
     this.socket.on("notAccept", (data) => {
-      console.log("not accepted");
+      this.chat("not accepted");
     });
   },
 };

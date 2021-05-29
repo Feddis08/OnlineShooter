@@ -2,7 +2,7 @@ class Entity {
   type = "";
   id = 0;
   name = "noName";
-  action = false;
+  action = "idle";
   collision = false;
   x = 0;
   y = 0;
@@ -10,7 +10,7 @@ class Entity {
   height = 100;
   x2 = 0;
   y2 = 0;
-  step = 2;
+  step = 10;
   checkMove = (direction) => {
     let me = {
       entity: this,
@@ -42,7 +42,7 @@ class Entity {
       this.x = me.here.x1;
       this.y = me.here.y1;
     }
-    GameServer.change = true;
+    if (this.action !== "idle") GameServer.change = true;
     this.action = "idle";
   };
 
@@ -57,9 +57,9 @@ class Entity {
           y2: user.y + user.height,
         };
         if (me.here.x2 >= other.x1 && me.here.x1 <= other.x2) {
-          console.log("start3");
+          //console.log("start3");
           if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
-            console.log(me.name, ":collision with:", user.name);
+            //console.log(me.name, ":collision with:", user.name);
             me.entity.collision = true;
           }
         }
