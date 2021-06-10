@@ -2,10 +2,13 @@
   <head>
 
   <script
-    src="https://cdn.socket.io/3.1.3/socket.io.min.js"
+    src="/socket.io.min.js"
+  ></script>
+  <!--script
+    src="https://cdn.socket.io/3.1.3/"
     integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh"
     crossorigin="anonymous"
-  ></script>
+  ></script-->
   <link rel="stylesheet" href="styles.css"></style>
   </head>
   <body>
@@ -18,7 +21,7 @@
   <div id="chat"></div>
   <div id="input">
     <input type="text" id="chatInput"></input><br />
-  <button>send</button>
+  <button onclick="send();">send</button>
   </div>
   </div>
     <div id="left"></div>

@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
     var y = Math.random() * 400;
     x = 400;
     y = 400;
-    const player = new Entity(id, playerName, "player", x, y);
+    const player = new Entity(id, playerName, "entity", x, y, 40, 100, "red");
     GameServer.users.push(player);
     console.log("[Server]: user joined:", playerName);
     message.name = playerName;
@@ -42,13 +42,16 @@ io.on("connection", (socket) => {
       }
     });
   });
-  socket.on("chat", (message) => {
+  socket.on("chat", (pMessage) => {
     GameServer.users.forEach((user, index) => {
       if (socket.id == user.id) {
-        console.log("[Chat]:", user.name, "says:", message.content);
+        console.log("[Chat]:", user.name, "says:", pMessage.content);
+	message.content = pMessage.content;
         message.name = user.name;
         message.id = user.id;
         message.fromServer = false;
+console.log(123123);
+console.log( message, "---W", pMessage );
         io.emit("Chat", message);
         console.log(
           "[Chat]: send: ",
@@ -75,12 +78,12 @@ GameServer = {
     GameServer.users.forEach((user, index) => {
       if (GameServer.users.lenght == 10) {
         GameServer.users = [];
-        const player = new Entity("asdfasdf", "wand", "player", 350, 400);
         console.log("roboot");
       }
       if (user.action !== "idle") {
         user.checkMove(user.action);
       }
+        const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
       if (GameServer.change == true) {
         user.action = "idle";
         io.emit("response", GameServer.users);
@@ -91,7 +94,11 @@ GameServer = {
   },
 };
 
-const player = new Entity("asdfasdf", "wand", "player", 350, 400);
-GameServer.users.push(player);
+const wall1 = new Entity("wall1", "wand1", "entity", 350, 400, 40, 100, "green");
+const wall2 = new Entity("wall2", "wand2", "entity", 0, 0, 20, 500, "black");
+const wall3 = new Entity("wall3", "wand3", "entity", 0, 500, 500, 20, "black");
+const wall4 = new Entity("wall2", "wand2", "entity", 0, 0, 20, 500, "black");
+const wall5 = new Entity("wall2", "wand2", "entity", 0, 0, 20, 500, "black");
+GameServer.users.push(wall1, wall2, wall3, wall4, wall5);
 
 GameServer.boot();

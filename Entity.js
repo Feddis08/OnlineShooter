@@ -1,3 +1,4 @@
+
 class Entity {
   type = "";
   id = 0;
@@ -8,6 +9,7 @@ class Entity {
   y = 0;
   width = 40;
   height = 100;
+  color = "";
   x2 = 0;
   y2 = 0;
   step = 10;
@@ -66,12 +68,16 @@ class Entity {
       }
     });
   };
-  constructor(id, name, type, x, y) {
+  constructor(id, name, type, x, y, w, h, color) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.x = x;
     this.y = y;
+	this.height = h;
+	this.width = w;
+	this.color = color;
+
   }
 }
 
