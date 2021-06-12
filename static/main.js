@@ -1,9 +1,12 @@
 draw = (objects) => {
   objects.forEach((object) => {
-    const existingNode = document.getElementById(object.id);
-	if (existingNode ) document.body.removeChild( existingNode );
+    console.log(object.id, object.type);
+    const gameBoard = document.querySelector("#gameBoard");
+    console.log(gameBoard);
+    const existingNode = gameBoard.querySelector("#" + object.id);
+    if (existingNode) gameBoard.removeChild(existingNode);
     const domNode = document.createElement("div");
-    document.body.appendChild(domNode);
+    gameBoard.appendChild(domNode);
     domNode.classList.add(object.type);
     domNode.textContent = object.name;
     domNode.id = object.id;
@@ -11,7 +14,7 @@ draw = (objects) => {
     domNode.style.left = object.x;
     domNode.style.height = object.height;
     domNode.style.width = object.width;
-    domNode.style.background = object.color; 
+    domNode.style.background = object.color;
   });
 };
 //draw(objects);
@@ -50,7 +53,7 @@ send = () => {
 const Server = {
   url: "http://10.0.0.118:25545",
   //url: "http://feddis08.ddns.net:80",
-	url: "http://localhost:25545",
+  url: "http://localhost:25545",
   socket: null,
   chat(text) {
     const chat = document.querySelector("#chat");

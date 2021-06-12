@@ -1,7 +1,16 @@
 #playerName {
   background: pink;
 }
-.entity{
+.entity {
+  position: absolute;
+  width: 40px;
+  height: 100px;
+  background: red;
+}
+.wall {
+  position: absolute;
+}
+.player {
   position: absolute;
   width: 40px;
   height: 100px;

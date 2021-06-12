@@ -1,4 +1,3 @@
-
 class Entity {
   type = "";
   id = 0;
@@ -14,6 +13,7 @@ class Entity {
   y2 = 0;
   step = 10;
   checkMove = (direction) => {
+    // clone player pos w/o changing object
     let me = {
       entity: this,
       here: {
@@ -69,15 +69,15 @@ class Entity {
     });
   };
   constructor(id, name, type, x, y, w, h, color) {
+    console.log(type, x, y);
     this.id = id;
     this.name = name;
     this.type = type;
     this.x = x;
     this.y = y;
-	this.height = h;
-	this.width = w;
-	this.color = color;
-
+    this.height = h;
+    this.width = w;
+    this.color = color;
   }
 }
 

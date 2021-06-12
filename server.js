@@ -1,5 +1,8 @@
 var express = require("express");
 var Entity = require("./Entity.js");
+var Player = require("./Player.js");
+var Wall = require("./Wall.js");
+var Bullet = require("./bullet.js");
 var app = express();
 var port = 25545;
 var socket = require("socket.io");
@@ -19,12 +22,8 @@ var message = {
 io.on("connection", (socket) => {
   let id = socket.id;
   socket.on("join", (playerName) => {
-    var x = Math.random() * 400;
-    var y = Math.random() * 400;
-    x = 400;
-    y = 400;
-    const player = new Entity(id, playerName, "entity", x, y, 40, 100, "red");
-    GameServer.users.push(player);
+    const player = new Player(id, playerName);
+    GameServer.users.push(player); //, bullet);
     console.log("[Server]: user joined:", playerName);
     message.name = playerName;
     message.content = "joined the game";
@@ -46,12 +45,10 @@ io.on("connection", (socket) => {
     GameServer.users.forEach((user, index) => {
       if (socket.id == user.id) {
         console.log("[Chat]:", user.name, "says:", pMessage.content);
-	message.content = pMessage.content;
+        message.content = pMessage.content;
         message.name = user.name;
         message.id = user.id;
         message.fromServer = false;
-console.log(123123);
-console.log( message, "---W", pMessage );
         io.emit("Chat", message);
         console.log(
           "[Chat]: send: ",
@@ -83,9 +80,9 @@ GameServer = {
       if (user.action !== "idle") {
         user.checkMove(user.action);
       }
-        const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
+      //  const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
       if (GameServer.change == true) {
-        user.action = "idle";
+        //user.action = "idle";
         io.emit("response", GameServer.users);
         GameServer.change = false;
         //console.log(GameServer.change);
@@ -94,11 +91,13 @@ GameServer = {
   },
 };
 
-const wall1 = new Entity("wall1", "wand1", "entity", 350, 400, 40, 100, "green");
-const wall2 = new Entity("wall2", "wand2", "entity", 0, 0, 20, 500, "black");
-const wall3 = new Entity("wall3", "wand3", "entity", 0, 500, 500, 20, "black");
-const wall4 = new Entity("wall2", "wand2", "entity", 0, 0, 20, 500, "black");
-const wall5 = new Entity("wall2", "wand2", "entity", 0, 0, 20, 500, "black");
-GameServer.users.push(wall1, wall2, wall3, wall4, wall5);
+//wall (name, h, w, x, y)
+const wall2 = new Wall("wall2", 600, 10, 0, 0);
+const wall3 = new Wall("wall3", 10, 600, 0, 600);
+const wall4 = new Wall("wall4", 610, 10, 600, 0);
+const wall5 = new Wall("wall5", 10, 600, 0, 0);
+const bullet = new Bullet();
+
+GameServer.users.push(wall2, wall3, wall4, wall5, bullet);
 
 GameServer.boot();
