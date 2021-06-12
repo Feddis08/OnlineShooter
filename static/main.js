@@ -1,6 +1,10 @@
 draw = (objects) => {
   objects.forEach((object) => {
-    console.log(object.id, object.type);
+    console.log(object.type);
+    if (object.type == "player") {
+      console.log(object);
+    }
+    console.log(object.type);
     const gameBoard = document.querySelector("#gameBoard");
     console.log(gameBoard);
     const existingNode = gameBoard.querySelector("#" + object.id);

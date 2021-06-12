@@ -45,7 +45,7 @@ class Entity {
       this.y = me.here.y1;
     }
     if (this.action !== "idle") GameServer.change = true;
-    this.action = "idle";
+    if (this.type == "player") this.action = "idle";
   };
 
   collisionDetect = (me) => {
@@ -62,7 +62,12 @@ class Entity {
           //console.log("start3");
           if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
             //console.log(me.name, ":collision with:", user.name);
+
             me.entity.collision = true;
+            if (me.entity.type == "bullet") {
+              me.entity.action = "idle";
+              console.log("hit");
+            }
           }
         }
       }
