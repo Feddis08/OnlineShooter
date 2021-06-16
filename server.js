@@ -26,8 +26,8 @@ io.on("connection", (socket) => {
     const player = new Player(id, playerName);
     GameServer.users.push(player); //, bullet);
     console.log("[Server]: user joined:", playerName);
-    message.name = playerName;
-    message.content = "joined the game";
+    message.name = "Server";
+    message.content = playerName + " joined the game";
     io.emit("Chat", message);
     message.id = socket.id;
     message.fromServer = true;
@@ -70,7 +70,7 @@ GameServer = {
     //   console.log("|GameServer: starting with 100 ...");
     setInterval(() => {
       GameServer.gameServer();
-    }, 1);
+    }, 10);
   },
   gameServer: () => {
     GameServer.users.forEach((user, index) => {
@@ -79,16 +79,15 @@ GameServer = {
         console.log("roboot");
       }
       if (user.action !== "idle") {
-        console.log("i have to do sg: ", user.id);
+        //console.log("i have to do sg: ", user.id);
         var result = checkMove(user);
-        if (result.collision == false) {
+        if (result.collision === false) {
           GameServer.change = true;
-          user.x = result.here.x1;
-          user.y = result.here.y1;
-          console.log(result.here.x1 + " -!!!!!!- " + result.here.y1);
-          console.log(user);
+          user.move(result.here.x1, result.here.y1);
+        } else {
+          user.collisionWith(result.collision);
+          GameServer.change = true;
         }
-        user.action = "idle";
       }
       //  const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
       if (GameServer.change == true) {
@@ -106,8 +105,8 @@ const wall2 = new Wall("wall2", 600, 10, 0, 0);
 const wall3 = new Wall("wall3", 10, 600, 0, 600);
 const wall4 = new Wall("wall4", 610, 10, 600, 0);
 const wall5 = new Wall("wall5", 10, 600, 0, 0);
-//const bullet = new Bullet();
+const bullet = new Bullet();
 
-GameServer.users.push(wall2, wall3, wall4, wall5); //, bullet);
+GameServer.users.push(wall2, wall3, wall4, wall5, bullet);
 
 GameServer.boot();

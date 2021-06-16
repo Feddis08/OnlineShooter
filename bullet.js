@@ -7,10 +7,14 @@ class Bullet extends Entity {
     var y = 40;
     var type = "bullet";
     var color = "blue";
-    var name = "bullet";
+    var name = "";
     var id = "bullet";
     super(id, name, type, x, y, w, h, color);
     this.action = "ArrowRight";
+  }
+  collisionWith(entity) {
+    this.action = "idle";
+    console.log("BOOOOOOM !!! hit with " + entity.id);
   }
 }
 

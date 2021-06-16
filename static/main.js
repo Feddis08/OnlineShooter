@@ -1,19 +1,13 @@
 draw = (objects) => {
   objects.forEach((object) => {
-    console.log(object.type);
-    if (object.type == "player") {
-      console.log(object);
-    }
-    console.log(object.type);
     const gameBoard = document.querySelector("#gameBoard");
-    console.log(gameBoard);
-    const existingNode = gameBoard.querySelector("#" + object.id);
+    const existingNode = gameBoard.querySelector("#" + object._id);
     if (existingNode) gameBoard.removeChild(existingNode);
     const domNode = document.createElement("div");
     gameBoard.appendChild(domNode);
     domNode.classList.add(object.type);
     domNode.textContent = object.name;
-    domNode.id = object.id;
+    domNode.id = object._id;
     domNode.style.top = object.y;
     domNode.style.left = object.x;
     domNode.style.height = object.height;
@@ -42,16 +36,20 @@ keyHandles = () => {
 };
 keyHandles();
 
-class message {
-  content = "";
-  id = "";
-  name = "";
-  fromServer = false;
-}
+var message = {
+  content: "",
+  id: "",
+  name: "",
+  fromServer: false,
+};
 
 send = () => {
-  message.content = document.querySelector("#chatInput").value;
+  const dnChatInput = document.querySelector("#chatInput");
+  console.log(dnChatInput);
+  console.log(dnChatInput.value);
+  message.content = dnChatInput.value;
   Server.socket.emit("chat", message);
+  console.log(message);
 };
 
 const Server = {
@@ -61,6 +59,7 @@ const Server = {
   socket: null,
   chat(text) {
     const chat = document.querySelector("#chat");
+    console.log(chat, text);
     chat.innerHTML = text + "<br>" + chat.innerHTML;
   },
   start(name) {
@@ -70,7 +69,8 @@ const Server = {
       draw(objects);
     });
     this.socket.on("Chat", (message) => {
-      this.chat("[" + message.name + "]:", message.content);
+      console.log(123, message);
+      this.chat("[" + message.name + "]: " + message.content);
     });
     this.socket.on("accept", (data) => {
       this.chat("accepted");

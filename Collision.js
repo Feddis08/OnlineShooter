@@ -27,7 +27,6 @@ var checkMove = (entity) => {
     me.here.x2 -= entity.step;
   }
   var result = collisionDetect(me);
-  console.log(entity.id + " " + result);
   return {
     collision: result,
     here: me.here,
@@ -44,24 +43,24 @@ var checkMove = (entity) => {
 
 var collisionDetect = (me) => {
   let collision = false;
-  GameServer.users.forEach((user, index) => {
-    if (!(user.id == me.id)) {
+  GameServer.users.forEach((otherUser, index) => {
+    if (!(otherUser.id == me.id)) {
       const other = {
-        x1: user.x,
-        y1: user.y,
-        x2: user.x + user.width,
-        y2: user.y + user.height,
+        x1: otherUser.x,
+        y1: otherUser.y,
+        x2: otherUser.x + otherUser.width,
+        y2: otherUser.y + otherUser.height,
       };
       if (me.here.x2 >= other.x1 && me.here.x1 <= other.x2) {
-        //console.log("start3");
+        //.log("start3");
         if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
-          //console.log(me.name, ":collision with:", user.name);
+          //.log(me.name, ":collision with:", otherUser.name);
 
-          collision = true;
+          collision = otherUser;
           /*
           if (me.entity.type == "bullet") {
             me.entity.action = "idle";
-            console.log("hit");
+            .log("hit");
           }
         */
         }

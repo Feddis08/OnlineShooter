@@ -9,6 +9,11 @@ class Player extends Entity {
     var color = "red";
     super(id, name, type, x, y, width, height, color);
   }
+
+  collisionWith(entity) {
+    this.action = "idle";
+    console.log("Upps", entity.id);
+  }
 }
 
 module.exports = Player;
