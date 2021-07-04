@@ -4,7 +4,7 @@ class Wall extends Entity {
     var type = "wall";
     var color = "black";
     var name = "";
-    super(id, name, type, x, y, w, h, color);
+    super(id, name, type, x, y, w, h, color, "idle");
   }
 }
 

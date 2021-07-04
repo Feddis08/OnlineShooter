@@ -1,6 +1,7 @@
 var checkMove = (entity) => {
   // clone player pos w/o changing object
   const direction = entity.action;
+  if (entity.type !== "player") console.log("checkmove", entity.action);
   let me = {
     id: entity.id,
     here: {
@@ -31,14 +32,6 @@ var checkMove = (entity) => {
     collision: result,
     here: me.here,
   };
-  /*
-  if (!entity.collision) {
-    entity.x = me.here.x1;
-    entity.y = me.here.y1;
-  }
-  if (entity.action !== "idle") GameServer.change = true;
-  if (entity.type == "player") entity.action = "idle";
-*/
 };
 
 var collisionDetect = (me) => {
@@ -57,12 +50,6 @@ var collisionDetect = (me) => {
           //.log(me.name, ":collision with:", otherUser.name);
 
           collision = otherUser;
-          /*
-          if (me.entity.type == "bullet") {
-            me.entity.action = "idle";
-            .log("hit");
-          }
-        */
         }
       }
     }

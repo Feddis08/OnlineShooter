@@ -1,8 +1,9 @@
-draw = (objects) => {
+var joined = false; const gameBoard = document.querySelector("#gameBoard"); draw = (objects) => {
   objects.forEach((object) => {
-    const gameBoard = document.querySelector("#gameBoard");
     const existingNode = gameBoard.querySelector("#" + object._id);
     if (existingNode) gameBoard.removeChild(existingNode);
+
+    if (object.toDelete) gameBoard.removeChild(existingNode);
     const domNode = document.createElement("div");
     gameBoard.appendChild(domNode);
     domNode.classList.add(object.type);
@@ -16,7 +17,7 @@ draw = (objects) => {
   });
 };
 //draw(objects);
-
+let currentMove = "idle";
 keyHandles = () => {
   document.addEventListener("keydown", (evt) => {
     switch (evt.code) {
@@ -25,14 +26,28 @@ keyHandles = () => {
       case "ArrowDown":
       case "ArrowRight":
       case "ArrowLeft":
+        if (currentMove != evt.code) {
+          if (evt.code == "Space") {
+            Server.socket.emit("request", evt.code);
+          } else {
+            console.log('xxx', evt)
+            currentMove = evt.code;
+            console.log(evt.code)
+            Server.socket.emit("request", evt.code);
+          }
+        }
         //Server.chat("next move: " + evt.code);
-        Server.socket.emit("request", evt.code);
         break;
     }
   });
   document.addEventListener("keyup", (evt) => {
-    Server.socket.emit("request", "idle");
-  });
+    if (evt.code == "Space") {
+      Server.socket.emit("request", currentMove);
+    } else {
+      currentMove = "idle";
+      Server.socket.emit("request", currentMove);
+    }
+  })
 };
 keyHandles();
 
@@ -83,7 +98,10 @@ const Server = {
 Server.start(name);
 
 var join = function () {
-  //  var name = document.getElementById("playerName").value;
-  var name = document.querySelector("#playerName").value;
-  Server.socket.emit("join", name);
+  if (joined == false) {
+    //  var name = document.getElementById("playerName").value;
+    var name = document.querySelector("#playerName").value;
+    Server.socket.emit("join", name);
+    joined = true;
+  }
 };

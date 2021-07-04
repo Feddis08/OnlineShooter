@@ -42,6 +42,14 @@ io.on("connection", (socket) => {
       }
     });
   });
+  socket.on("disconnect", (socket, asdf) => {
+    GameServer.users.forEach((user, index) => {
+      if (user.id == id) {
+        user.toDelete = true;
+      }
+    });
+    console.log(id);
+  });
   socket.on("chat", (pMessage) => {
     GameServer.users.forEach((user, index) => {
       if (socket.id == user.id) {
@@ -73,30 +81,34 @@ GameServer = {
     }, 10);
   },
   gameServer: () => {
+    GameServer.change = false;
     GameServer.users.forEach((user, index) => {
+      user.tick();
       if (GameServer.users.lenght == 10) {
         GameServer.users = [];
         console.log("roboot");
       }
       if (user.action !== "idle") {
-        //console.log("i have to do sg: ", user.id);
-        var result = checkMove(user);
-        if (result.collision === false) {
-          GameServer.change = true;
-          user.move(result.here.x1, result.here.y1);
-        } else {
-          user.collisionWith(result.collision);
-          GameServer.change = true;
+        if (user.type !== "player") console.log("i have to do sg: ", user.id);
+        if (user.actionHandling(user.action)) GameServer.change = true;
+      }
+      if (user.toDelete == true) {
+        io.emit("response", GameServer.users);
+        GameServer.users.splice(index, 1);
+        if (user.type == "player") {
+          message.name = "Server";
+          message.content = user.name + " disconnected from the game";
+          io.emit("Chat", message);
         }
       }
       //  const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
-      if (GameServer.change == true) {
-        //user.action = "idle";
-        io.emit("response", GameServer.users);
-        GameServer.change = false;
-        //console.log(GameServer.change);
-      }
     });
+    if (GameServer.change == true) {
+      //user.action = "idle";
+      io.emit("response", GameServer.users);
+      GameServer.change = false;
+      //console.log(GameServer.change);
+    }
   },
 };
 
@@ -105,8 +117,7 @@ const wall2 = new Wall("wall2", 600, 10, 0, 0);
 const wall3 = new Wall("wall3", 10, 600, 0, 600);
 const wall4 = new Wall("wall4", 610, 10, 600, 0);
 const wall5 = new Wall("wall5", 10, 600, 0, 0);
-const bullet = new Bullet();
 
-GameServer.users.push(wall2, wall3, wall4, wall5, bullet);
+GameServer.users.push(wall2, wall3, wall4, wall5);
 
 GameServer.boot();
