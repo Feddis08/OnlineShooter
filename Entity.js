@@ -1,7 +1,9 @@
 var checkMove = require("./Collision.js");
 class Entity {
   type = "";
+  deleteInfo = "nothing";
   id = 0;
+  changes = false;
   name = "noName";
   action = "idle";
   move = "idle";
@@ -15,6 +17,7 @@ class Entity {
   x2 = 0;
   y2 = 0;
   step = 10;
+  upTime = 0;
   toDelete = false;
   constructor(id, name, type, x, y, w, h, color, move) {
     this.id = id;
@@ -42,8 +45,12 @@ class Entity {
     const id = "XX" + new Date().getTime() + rand.split(".")[1];
     this._id = id;
   }
-  tick() {
+  tick2() {
 
+  }
+  tick() {
+    this.tick2();
+    this.upTime += 10;
   }
   deleteMe() {
     this.toDelete = true;

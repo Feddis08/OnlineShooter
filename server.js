@@ -79,7 +79,7 @@ GameServer = {
     //   console.log("|GameServer: starting with 100 ...");
     setInterval(() => {
       GameServer.gameServer();
-    }, 100);
+    }, 10);
   },
   gameServer: () => {
     GameServer.change = false;
@@ -88,13 +88,21 @@ GameServer = {
       if (user.move !== "idle" || user.action !== "idle") {
         if (user.actionHandling(user.action)) GameServer.change = true;
       }
+
       if (user.toDelete == true) {
         io.emit("response", GameServer.users);
         GameServer.users.splice(index, 1);
-        if (user.type == "Player") {
-          message.name = "Server";
-          message.content = user.name + " disconnected from the game";
-          io.emit("Chat", message);
+        if (user.type == "player") {
+          pmessage.name = "Server";
+          if (user.died == true) {
+            pmessage.content = user.name + " was killed by " + user.hittedBy;
+            io.emit("Chat", pmessage);
+            console.log(user.name + " was killed by " + user.hittedBy);
+          } else {
+            pmessage.content = user.name + " disconnected from the game";
+            io.emit("Chat", pmessage);
+            console.log("[Chat]:", user.name, "disconnected from the game");
+          }
         }
       }
       //  const player = new Entity("asdfasdf", "wand", "entity", 350, 400);

@@ -1,5 +1,14 @@
-var joined = false; const gameBoard = document.querySelector("#gameBoard"); draw = (objects) => {
+var joined = false;
+const gameBoard = document.querySelector("#gameBoard");
+const hp = document.querySelector("#hp");
+draw = (objects) => {
   objects.forEach((object) => {
+    if (object.id == Server.socket.id) {
+      hp.innerHTML = "HP: " + object.health;
+      if (object.toDelete == true) {
+        hp.innerHTML = object.deleteInfo;
+      }
+    }
     const existingNode = gameBoard.querySelector("#" + object._id);
     if (existingNode) gameBoard.removeChild(existingNode);
 
@@ -101,6 +110,7 @@ const Server = {
   url: "http://10.0.0.118:25545",
   //url: "http://feddis08.ddns.net:80",
   url: "http://localhost:25545",
+  url: "http://10.0.0.165:25545",
   socket: null,
   chat(text) {
     const chat = document.querySelector("#chat");

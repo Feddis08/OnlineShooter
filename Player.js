@@ -2,6 +2,9 @@ var Bullet = require("./bullet.js");
 var Entity = require("./Entity.js");
 class Player extends Entity {
   reloadTime = 0;
+  health = 10;
+  hittedBy = "noName";
+  died = false;
   constructor(id, name) {
     var x = Math.random() * 400;
     var y = Math.random() * 400;
@@ -11,16 +14,21 @@ class Player extends Entity {
     var color = "red";
     super(id, name, type, x, y, width, height, color, "idle");
   }
-  tick() {
+  tick2() {
     if (this.reloadTime != 0) {
       this.reloadTime -= 10;
+    }
+    if (this.health == 0) {
+      this.deleteInfo = "GameOver";
+      this.died = true;
+      this.deleteMe();
     }
 
   }
   shoot() {
     if (this.reloadTime != 0) {
     } else {
-      this.reloadTime = 100;
+      this.reloadTime = 1000;
       if (this.lastMoveDirection == "ArrowRight") {
         var xBullet = this.x + this.width + 40;
         var yBullet = this.y + this.height / 2;

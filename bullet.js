@@ -9,12 +9,24 @@ class Bullet extends Entity {
     var color = "blue";
     var name = "";
     var id = "bullet";
-    var from = player;
     var move = shootDirection;
     super(id, name, type, x, y, w, h, color, move);
+    var player = player;
+  }
+  tick2() {
+    if (this.upTime == 5000) {
+      this.deleteMe();
+    }
+
   }
   collisionWith(entity) {
     if (this.from == entity) {
+    }
+    if (entity.type == "player") {
+      entity.health -= 1;
+      entity.hittedBy = this.player;
+      this.deleteMe();
+      //console.log("[Game]:", this.from.name, "hitted", entity.name, "(" + entity.health + ")");
     }
     if (entity.type == "wall") {
       this.deleteMe();
