@@ -1,7 +1,6 @@
 var checkMove = (entity) => {
   // clone player pos w/o changing object
-  const direction = entity.action;
-  if (entity.type !== "player") console.log("checkmove", entity.action);
+  const direction = entity.move;
   let me = {
     id: entity.id,
     here: {
@@ -11,22 +10,30 @@ var checkMove = (entity) => {
       y2: entity.y + entity.height,
     },
   };
+  const saveLastDirection = () => {
+    entity.lastMoveDirection = direction;
+  };
   if (direction == "ArrowUp") {
     me.here.y1 -= entity.step;
     me.here.y2 -= entity.step;
+    saveLastDirection();
   }
   if (direction == "ArrowDown") {
     me.here.y1 += entity.step;
     me.here.y2 += entity.step;
+    saveLastDirection();
   }
   if (direction == "ArrowRight") {
     me.here.x1 += entity.step;
     me.here.x2 += entity.step;
+    saveLastDirection();
   }
   if (direction == "ArrowLeft") {
     me.here.x1 -= entity.step;
     me.here.x2 -= entity.step;
+    saveLastDirection();
   }
+
   var result = collisionDetect(me);
   return {
     collision: result,

@@ -9,7 +9,6 @@ class Player extends Entity {
     var height = 100;
     var width = 50;
     var color = "red";
-
     super(id, name, type, x, y, width, height, color, "idle");
   }
   tick() {
@@ -20,18 +19,34 @@ class Player extends Entity {
   }
   shoot() {
     if (this.reloadTime != 0) {
-      console.log("can't shoot!!!!!");
     } else {
-      this.reloadTime = 1000;
-      const xBullet = this.x + this.width + 40;
-      const yBullet = this.y + this.height / 2;
-      var bullet = new Bullet(xBullet, yBullet, "ArrowRight", this);
+      this.reloadTime = 100;
+      if (this.lastMoveDirection == "ArrowRight") {
+        var xBullet = this.x + this.width + 40;
+        var yBullet = this.y + this.height / 2;
+        var bullet = new Bullet(xBullet, yBullet, this.lastMoveDirection, this);
+      }
+      if (this.lastMoveDirection == "ArrowLeft") {
+        var xBullet = this.x + this.width + -90;
+        var yBullet = this.y + this.height / 2;
+        var bullet = new Bullet(xBullet, yBullet, this.lastMoveDirection, this);
+      }
+      if (this.lastMoveDirection == "ArrowDown") {
+        var yBullet = this.y + this.height + 40;
+        var xBullet = this.x + this.width / 2;
+        var bullet = new Bullet(xBullet, yBullet, this.lastMoveDirection, this);
+      }
+      if (this.lastMoveDirection == "ArrowUp") {
+        var yBullet = this.y + this.height - 140;
+        var xBullet = this.x + this.width / 2;
+        var bullet = new Bullet(xBullet, yBullet, this.lastMoveDirection, this);
+      }
+      //var bullet = new Bullet(xBullet, yBullet, this.shootDirection, this);
       GameServer.users.push(bullet);
     }
   }
   collisionWith(entity) {
-    this.action = "idle";
-    console.log("Upps", entity.id);
+    this.move = "idle";
   }
 }
 

@@ -18,6 +18,7 @@ var joined = false; const gameBoard = document.querySelector("#gameBoard"); draw
 };
 //draw(objects);
 let currentMove = "idle";
+var changes = false;
 keyHandles = () => {
   document.addEventListener("keydown", (evt) => {
     switch (evt.code) {
@@ -28,12 +29,14 @@ keyHandles = () => {
       case "ArrowLeft":
         if (currentMove != evt.code) {
           if (evt.code == "Space") {
-            Server.socket.emit("request", evt.code);
+            m = new Data({ action: "Space" })
+            //Server.socket.emit("request", evt.code);
           } else {
             console.log('xxx', evt)
             currentMove = evt.code;
             console.log(evt.code)
-            Server.socket.emit("request", evt.code);
+            m = new Data({ move: evt.code });
+            //Server.socket.emit("request", evt.code);
           }
         }
         //Server.chat("next move: " + evt.code);
@@ -42,10 +45,17 @@ keyHandles = () => {
   });
   document.addEventListener("keyup", (evt) => {
     if (evt.code == "Space") {
-      Server.socket.emit("request", currentMove);
+      m = new Data({
+        move: currentMove
+      });
+      //m = new Data(currentMove, "idle", "idle", true);
+      //Server.socket.emit("request", currentMove);
     } else {
       currentMove = "idle";
-      Server.socket.emit("request", currentMove);
+      m = new Data({
+        move: "idle"
+      });
+      //Server.socket.emit("request", currentMove);
     }
   })
 };
@@ -58,14 +68,34 @@ var message = {
   fromServer: false,
 };
 
-send = () => {
+class Data {
+  id = "";
+  name = "";
+  content = "";
+  isChatMessage = false;
+
+  move = "";
+  action = "";
+  shootDirection = "";
+  isMoveMessage = false;
+
+  send = (m) => {
+    Server.socket.emit("request", m);
+    console.log("Sended:", this);
+  }
+
+  constructor(opts) {
+    this.move = opts.move || null; //e.g Arrowup
+    this.action = opts.action || "idle";//e.g shoot(space) do something
+    this.isMoveMessage = (this.move) ? true : false;
+    this.content = opts.content || null;
+    this.send(this);
+  }
+}
+createChatMessage = () => {
   const dnChatInput = document.querySelector("#chatInput");
-  console.log(dnChatInput);
-  console.log(dnChatInput.value);
-  message.content = dnChatInput.value;
-  Server.socket.emit("chat", message);
-  console.log(message);
-};
+  m = new Data({ content: dnChatInput.value });
+}
 
 const Server = {
   url: "http://10.0.0.118:25545",

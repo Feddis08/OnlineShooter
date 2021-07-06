@@ -13,7 +13,7 @@ var server = app.listen(port, function () {
 app.use(express.static("static"));
 var io = socket(server);
 
-var message = {
+var pmessage = {
   name: "",
   id: "",
   content: "",
@@ -26,21 +26,41 @@ io.on("connection", (socket) => {
     const player = new Player(id, playerName);
     GameServer.users.push(player); //, bullet);
     console.log("[Server]: user joined:", playerName);
-    message.name = "Server";
-    message.content = playerName + " joined the game";
-    io.emit("Chat", message);
-    message.id = socket.id;
-    message.fromServer = true;
+    pmessage.name = "Server";
+    pmessage.content = playerName + " joined the game";
+    io.emit("Chat", pmessage);
+    pmessage.id = socket.id;
+    pmessage.fromServer = true;
     //    console.log(GameServer.users);
     io.emit("response", GameServer.users);
   });
-  socket.on("request", (action) => {
-    //console.log("action", id, action);
+  socket.on("request", (message) => {
     GameServer.users.forEach((user, index) => {
       if (user.id == socket.id) {
-        user.action = action;
+        user.move = message.move;
+        user.action = message.action;
       }
     });
+    if (message.content != null) {
+      GameServer.users.forEach((user, index) => {
+        if (socket.id == user.id) {
+          console.log("[Chat]:", user.name, "says:", message.content);
+          pmessage.content = message.content;
+          pmessage.name = user.name;
+          pmessage.id = user.id;
+          pmessage.fromServer = false;
+          io.emit("Chat", pmessage);
+          console.log(
+            "[Chat]: send: ",
+            pmessage.content,
+            "to",
+            GameServer.users.lenght,
+            "users"
+          );
+        }
+      });
+
+    }
   });
   socket.on("disconnect", (socket, asdf) => {
     GameServer.users.forEach((user, index) => {
@@ -49,25 +69,6 @@ io.on("connection", (socket) => {
       }
     });
     console.log(id);
-  });
-  socket.on("chat", (pMessage) => {
-    GameServer.users.forEach((user, index) => {
-      if (socket.id == user.id) {
-        console.log("[Chat]:", user.name, "says:", pMessage.content);
-        message.content = pMessage.content;
-        message.name = user.name;
-        message.id = user.id;
-        message.fromServer = false;
-        io.emit("Chat", message);
-        console.log(
-          "[Chat]: send: ",
-          message.content,
-          "to",
-          GameServer.users.lenght,
-          "users"
-        );
-      }
-    });
   });
 });
 
@@ -78,24 +79,19 @@ GameServer = {
     //   console.log("|GameServer: starting with 100 ...");
     setInterval(() => {
       GameServer.gameServer();
-    }, 10);
+    }, 100);
   },
   gameServer: () => {
     GameServer.change = false;
     GameServer.users.forEach((user, index) => {
       user.tick();
-      if (GameServer.users.lenght == 10) {
-        GameServer.users = [];
-        console.log("roboot");
-      }
-      if (user.action !== "idle") {
-        if (user.type !== "player") console.log("i have to do sg: ", user.id);
+      if (user.move !== "idle" || user.action !== "idle") {
         if (user.actionHandling(user.action)) GameServer.change = true;
       }
       if (user.toDelete == true) {
         io.emit("response", GameServer.users);
         GameServer.users.splice(index, 1);
-        if (user.type == "player") {
+        if (user.type == "Player") {
           message.name = "Server";
           message.content = user.name + " disconnected from the game";
           io.emit("Chat", message);

@@ -1,6 +1,6 @@
 var Entity = require("./Entity.js");
 class Bullet extends Entity {
-  constructor(x, y, action, player) {
+  constructor(x, y, shootDirection, player) {
     var h = 20;
     var w = 20;
     var x = x;
@@ -10,21 +10,19 @@ class Bullet extends Entity {
     var name = "";
     var id = "bullet";
     var from = player;
-    super(id, name, type, x, y, w, h, color, action);
+    var move = shootDirection;
+    super(id, name, type, x, y, w, h, color, move);
   }
   collisionWith(entity) {
-    console.log("!!!!!!!!!!");
     if (this.from == entity) {
-      console.log("I don't hit my master");
     }
     if (entity.type == "wall") {
       this.deleteMe();
     }
     if (entity.type == "bullet") {
-      console.log("I don't hit my brothers");
     } else {
-      this.action = "idle";
-      console.log("BOOOOOOM !!! hit with " + entity.id);
+      this.move = "idle";
+      // "BOOOOOOM !!! hit with " + entity.id);
     }
   }
 }
