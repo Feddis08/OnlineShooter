@@ -3,14 +3,14 @@ var checkMove = require("./Collision.js");
 var Entity = require("./Entity.js");
 var Player = require("./Player.js");
 var Wall = require("./Wall.js");
-var Bullet = require("./bullet.js");
+var Bullet = require("./Bullet.js");
 var app = express();
 var port = 25545;
 var socket = require("socket.io");
 var server = app.listen(port, function () {
   console.log("|WebServer: starting at port: " + port + " ...");
 });
-app.use(express.static("static"));
+app.use(express.static("client"));
 var io = socket(server);
 
 var pmessage = {

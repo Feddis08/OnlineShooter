@@ -1,4 +1,4 @@
-var Bullet = require("./bullet.js");
+var Bullet = require("./Bullet.js");
 var Entity = require("./Entity.js");
 class Player extends Entity {
   reloadTime = 0;
