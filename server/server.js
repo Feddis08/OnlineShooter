@@ -12,6 +12,7 @@ app.use(express.static("../client"));
 var io = socket(server);
 const gameServer = new GameServer(io);
 var checkMove = require("./classes/modules/Collision.js");
+var createChatMessage = require("./classes/modules/ChatServer.js");
 var Entity = require("./classes/Entities/Entity.js");
 var Player = require("./classes/Entities/Player.js");
 var Wall = require("./classes/Entities/Wall.js");
@@ -46,24 +47,9 @@ io.on("connection", (socket) => {
       }
     });
     if (message.content != null) {
-      users.forEach((user, index) => {
-        if (socket.id == user.id) {
-          console.log("[Chat]:", user.name, "says:", message.content);
-          pmessage.content = message.content;
-          pmessage.name = user.name;
-          pmessage.id = user.id;
-          pmessage.fromServer = false;
-          io.emit("Chat", pmessage);
-          console.log(
-            "[Chat]: send: ",
-            pmessage.content,
-            "to",
-            users.length,
-            "users"
-          );
-        }
-      });
-
+      message.id = socket.id;
+      const outMessage = createChatMessage(message);
+      if (outMessage) io.emit("Chat", outMessage);
     }
   });
   socket.on("disconnect", (socket, asdf) => {
