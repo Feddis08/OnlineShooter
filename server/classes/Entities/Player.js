@@ -50,7 +50,6 @@ class Player extends Entity {
         var bullet = new Bullet(xBullet, yBullet, this.lastMoveDirection, this);
       }
       //var bullet = new Bullet(xBullet, yBullet, this.shootDirection, this);
-      GameServer.users.push(bullet);
     }
   }
   collisionWith(entity) {

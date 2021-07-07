@@ -1,4 +1,5 @@
 var Entity = require("./Entity.js");
+var users = require("../modules/Data.js");
 class Bullet extends Entity {
   constructor(x, y, shootDirection, player) {
     var h = 20;
@@ -12,6 +13,7 @@ class Bullet extends Entity {
     var move = shootDirection;
     super(id, name, type, x, y, w, h, color, move);
     var player = player;
+    users.push(this);
   }
   tick2() {
     if (this.upTime == 5000) {

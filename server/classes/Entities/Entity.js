@@ -1,4 +1,4 @@
-var checkMove = require("./Collision.js");
+var checkMove = require("../modules/Collision.js");
 class Entity {
   type = "";
   deleteInfo = "nothing";

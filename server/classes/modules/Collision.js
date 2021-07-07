@@ -1,3 +1,4 @@
+let users = require("./Data")
 var checkMove = (entity) => {
   // clone player pos w/o changing object
   const direction = entity.move;
@@ -43,7 +44,7 @@ var checkMove = (entity) => {
 
 var collisionDetect = (me) => {
   let collision = false;
-  GameServer.users.forEach((otherUser, index) => {
+  users.forEach((otherUser, index) => {
     if (!(otherUser.id == me.id)) {
       const other = {
         x1: otherUser.x,
