@@ -6,18 +6,18 @@ var pmessage = {
     fromServer: false,
 };
 class GameServer {
-    change = false;
-    io = null;
     constructor(io) {
+	   this.change = false;
+	    this.io = null;
         this.io = io;
         this.boot();
     }
-    boot = () => {
+    boot() {
         setInterval(() => {
             this.server();
         }, 10);
     };
-    server = () => {
+    server() {
         this.change = false;
         users.forEach((user, index) => {
             user.tick();
