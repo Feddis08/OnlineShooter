@@ -1,19 +1,19 @@
 var Bullet = require("./Bullet.js");
 var Entity = require("./Entity.js");
 class Player extends Entity {
+  constructor(id, name) {
+    let x = Math.random() * 400;
+    let y = Math.random() * 400;
+    const type = "player";
+    const height = 100;
+    const width = 50;
+    let color = "red";
+    super(id, name, type, x, y, width, height, color, "idle");
+  }
   reloadTime = 0;
   health = 10;
   hittedBy = "noName";
   died = false;
-  constructor(id, name) {
-    var x = Math.random() * 400;
-    var y = Math.random() * 400;
-    var type = "player";
-    var height = 100;
-    var width = 50;
-    var color = "red";
-    super(id, name, type, x, y, width, height, color, "idle");
-  }
   tick2() {
     if (this.reloadTime != 0) {
       this.reloadTime -= 10;
