@@ -7,8 +7,7 @@ var pmessage = {
 };
 class GameServer {
     constructor(io) {
-	   this.change = false;
-	    this.io = null;
+        this.change = false;
         this.io = io;
         this.boot();
     }

@@ -2,17 +2,11 @@ var Entity = require("./Entity.js");
 var users = require("../modules/Data.js");
 class Bullet extends Entity {
   constructor(x, y, shootDirection, player) {
-    var h = 20;
-    var w = 20;
-    var x = x;
-    var y = y;
-    var type = "bullet";
-    var color = "blue";
-    var name = "";
-    var id = "bullet";
-    var move = shootDirection;
-    super(id, name, type, x, y, w, h, color, move);
-    var player = player;
+    const id = "id of a bullt";
+    const name = "a bullet";
+    const type = "bullet";
+    super(id, name, type, x, y, 20, 20, "blue", shootDirection);
+    this.player = player;
     users.push(this);
   }
   tick2() {
