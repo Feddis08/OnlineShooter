@@ -9,11 +9,11 @@ class Player extends Entity {
     const width = 50;
     let color = "red";
     super(id, name, type, x, y, width, height, color, "idle");
+    this.reloadTime = 0;
+    this.health = 10;
+    this.hittedBy = "noName";
+    this.died = false;
   }
-  reloadTime = 0;
-  health = 10;
-  hittedBy = "noName";
-  died = false;
   tick2() {
     if (this.reloadTime != 0) {
       this.reloadTime -= 10;
