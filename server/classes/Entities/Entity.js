@@ -1,28 +1,14 @@
 var checkMove = require("../modules/Collision.js");
 class Entity {
-  type = "";
-  deleteInfo = "nothing";
-  id = 0;
-  changes = false;
-  name = "noName";
-  action = "idle";
-  move = "idle";
-  collision = false;
-  health = 3;
-  x = 0;
-  y = 0;
-  width = 40;
-  height = 100;
-  color = "";
-  x2 = 0;
-  y2 = 0;
-  step = 10;
-  upTime = 0;
-  toDelete = false;
   constructor(id, name, type, x, y, w, h, color, move) {
+  this.toDelete = false;
+  this.upTime = 0;
+  this.deleteInfo = "nothing";
+  this.collision = false;
     this.id = id;
     this.name = name;
     this.type = type;
+  this.action = "idle";
     this.x = x;
     this.y = y;
     this.height = h;
@@ -30,6 +16,9 @@ class Entity {
     this.color = color;
     this.move = move;
     this.lastMoveDirection = "ArrowRight";
+  this.step = 10;
+  this.x2 = 0;
+  this.y2 = 0;
     this.getId();
   }
   moveing(x, y) {
