@@ -4,7 +4,6 @@ apt-get install npm
 apt-get install screen
 apt-get update -y
 
-npm install
-
 cd ./server
+npm install
 screen -S shooter node server.js
