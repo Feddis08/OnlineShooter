@@ -14,7 +14,7 @@ class Player extends Entity {
     this.hittedBy = "noName";
     this.died = false;
   }
-  tick2() {
+  personalTick() {
     if (this.reloadTime != 0) {
       this.reloadTime -= 10;
     }

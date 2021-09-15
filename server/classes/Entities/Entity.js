@@ -1,25 +1,29 @@
 var checkMove = require("../modules/Collision.js");
+let data = require("../modules/Data")
 class Entity {
   constructor(id, name, type, x, y, w, h, color, move) {
+  
   this.toDelete = false;
+  this.isPlayer = false;
   this.upTime = 0;
+  this.online = 0;
   this.deleteInfo = "nothing";
   this.collision = false;
-    this.id = id;
-    this.name = name;
-    this.type = type;
+  this.id = id;
+  this.name = name;
+  this.type = type;
   this.action = "idle";
-    this.x = x;
-    this.y = y;
-    this.height = h;
-    this.width = w;
-    this.color = color;
-    this.move = move;
-    this.lastMoveDirection = "ArrowRight";
+  this.x = x;
+  this.y = y;
+  this.height = h;
+  this.width = w;
+  this.color = color;
+  this.move = move;
+  this.lastMoveDirection = "ArrowRight";
   this.step = 10;
   this.x2 = 0;
   this.y2 = 0;
-    this.getId();
+  this.getId();
   }
   moveing(x, y) {
     this.x = x;
@@ -34,11 +38,11 @@ class Entity {
     const id = "XX" + new Date().getTime() + rand.split(".")[1];
     this._id = id;
   }
-  tick2() {
-
+  personalTick() {
   }
   tick() {
-    this.tick2();
+    this.personalTick();
+    this.online = data.onlinePlayers;
     this.upTime += 10;
   }
   deleteMe() {

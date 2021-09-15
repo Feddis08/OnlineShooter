@@ -1,5 +1,7 @@
 
-let users = require("./Data")
+let data = require("./Data")
+let users = data.users;
+let onlinePlayers = data.onlinePlayers;
 ChatServer = {
     check: false,
     pmessage: {
@@ -13,8 +15,7 @@ ChatServer = {
             "[Chat]: send: ",
             ChatServer.pmessage.content,
             "to",
-            users.length,
-            "users"
+            onlinePlayers
         )
     },
     createChatMessage(message) {

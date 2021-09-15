@@ -2,7 +2,7 @@
   "dependencies": {
     "eiows": "^3.4.2",
     "express": "^4.17.1",
-    "nodemon": "^2.0.7",
+    "nodemon": "^2.0.12",
     "socket.io": "^4.0.0"
   },
   "optionalDependencies": {

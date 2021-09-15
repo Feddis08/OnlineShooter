@@ -1,6 +1,7 @@
 "use strict";
 var express = require("express");
-let users = require("./classes/modules/Data")
+let data = require("./classes/modules/Data")
+let users = data.users;
 const GameServer = require("./classes/modules/GameServer");
 var app = express();
 var port = 25545;
@@ -17,7 +18,7 @@ var Entity = require("./classes/Entities/Entity.js");
 var Player = require("./classes/Entities/Player.js");
 var Wall = require("./classes/Entities/Wall.js");
 var Bullet = require("./classes/Entities/Bullet.js");
-
+var onlinePlayers = 0;
 var pmessage = {
   name: "",
   id: "",
@@ -29,6 +30,7 @@ io.on("connection", (socket) => {
   let id = socket.id;
   socket.on("join", (playerName) => {
     const player = new Player(id, playerName);
+    player.isPlayer = true;
     users.push(player); //, bullet);
     console.log("[Server]: user joined:", playerName);
     pmessage.name = "Server";
@@ -58,7 +60,7 @@ io.on("connection", (socket) => {
         user.toDelete = true;
       }
     });
-    console.log(id);
+    //console.log(id);
   });
 });
 

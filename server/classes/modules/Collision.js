@@ -1,4 +1,5 @@
-let users = require("./Data")
+let data = require("./Data")
+let users = data .users;
 var checkMove = (entity) => {
   // clone player pos w/o changing object
   const direction = entity.move;

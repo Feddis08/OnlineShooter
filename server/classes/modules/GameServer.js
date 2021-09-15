@@ -1,4 +1,6 @@
-let users = require("./Data")
+let data = require("./Data")
+let users = data.users;
+let onlinePlayers = data.onlinePlayers;
 var pmessage = {
     name: "",
     id: "",
@@ -6,6 +8,7 @@ var pmessage = {
     fromServer: false,
 };
 class GameServer {
+    players = 0;
     constructor(io) {
         this.change = false;
         this.io = io;
@@ -16,8 +19,20 @@ class GameServer {
             this.server();
         }, 10);
     };
+    countOnlinePlayers(){
+        this.players=0;
+        onlinePlayers=0;
+        users.forEach((user, index) => {
+            if (user.isPlayer){
+                this.players += 1;
+                onlinePlayers = this.players;
+                data.onlinePlayers = onlinePlayers;
+            }
+        })
+    }
     server() {
         this.change = false;
+        this.countOnlinePlayers();
         users.forEach((user, index) => {
             user.tick();
             if (user.move !== "idle" || user.action !== "idle") {
@@ -30,9 +45,9 @@ class GameServer {
                 if (user.type == "player") {
                     pmessage.name = "Server";
                     if (user.died == true) {
-                        pmessage.content = user.name + " was killed by " + user.hittedBy;
+                        pmessage.content = user.name + " was killed by " + user.hittedBy.name;
                         this.io.emit("Chat", pmessage);
-                        console.log(user.name + " was killed by " + user.hittedBy);
+                        console.log("[Chat]: " + user.name + " was killed by " + user.hittedBy.name);
                     } else {
                         pmessage.content = user.name + " disconnected from the game";
                         this.io.emit("Chat", pmessage);
