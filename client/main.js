@@ -1,18 +1,22 @@
 var joined = false;
 const gameBoard = document.querySelector("#gameBoard");
-const hp = document.querySelector("#hp");
+const status = document.querySelector("#status");
+deleteObject = (object) => {
+    const existingNode = gameBoard.querySelector("#" + object._id);
+    if (object.toDelete) gameBoard.removeChild(existingNode);
+}
 draw = (objects) => {
   objects.forEach((object) => {
     if (object.id == Server.socket.id) {
-      hp.innerHTML = "HP: " + object.health;
+      status.innerHTML = "HP: " + object.health + " | Online: " + object.online;
       if (object.toDelete == true) {
-        hp.innerHTML = object.deleteInfo;
+        status.innerHTML = object.deleteInfo;
+        deleteObject(object);
       }
     }
     const existingNode = gameBoard.querySelector("#" + object._id);
     if (existingNode) gameBoard.removeChild(existingNode);
-
-    if (object.toDelete) gameBoard.removeChild(existingNode);
+    deleteObject(object);
     const domNode = document.createElement("div");
     gameBoard.appendChild(domNode);
     domNode.classList.add(object.type);
@@ -107,10 +111,12 @@ createChatMessage = () => {
 }
 
 const Server = {
-  url: "http://10.0.0.118:25545",
+  //url: "http://10.0.0.118:25545",
   //url: "http://feddis08.ddns.net:80",
   url: "http://localhost:25545",
-  url: "http://10.0.0.165:25545",
+  //url: "http://10.0.0.165:25545",
+  //url: "http://192.168.8.191:25545",
+  //url: "http://192.168.10.252:25545",
   socket: null,
   chat(text) {
     const chat = document.querySelector("#chat");
