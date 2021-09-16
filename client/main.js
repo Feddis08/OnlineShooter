@@ -3,7 +3,13 @@ const gameBoard = document.querySelector("#gameBoard");
 const status = document.querySelector("#status");
 deleteObject = (object) => {
     const existingNode = gameBoard.querySelector("#" + object._id);
-    if (object.toDelete) gameBoard.removeChild(existingNode);
+    if( existingNode ){
+      gameBoard.removeChild(existingNode);
+    }
+    else {
+      console.warn( 'object already removed!!!!')
+    }
+
 }
 draw = (objects) => {
   objects.forEach((object) => {
@@ -11,22 +17,24 @@ draw = (objects) => {
       status.innerHTML = "HP: " + object.health + " | Online: " + object.online;
       if (object.toDelete == true) {
         status.innerHTML = object.deleteInfo;
-        deleteObject(object);
+     //   deleteObject(object);
       }
     }
-    const existingNode = gameBoard.querySelector("#" + object._id);
-    if (existingNode) gameBoard.removeChild(existingNode);
+    //const existingNode = gameBoard.querySelector("#" + object._id);
+    //if (existingNode) gameBoard.removeChild(existingNode);
     deleteObject(object);
-    const domNode = document.createElement("div");
-    gameBoard.appendChild(domNode);
-    domNode.classList.add(object.type);
-    domNode.textContent = object.name;
-    domNode.id = object._id;
-    domNode.style.top = object.y;
-    domNode.style.left = object.x;
-    domNode.style.height = object.height;
-    domNode.style.width = object.width;
-    domNode.style.background = object.color;
+    if( ! object.toDelete ) {
+      const domNode = document.createElement("div");
+      gameBoard.appendChild(domNode);
+      domNode.classList.add(object.type);
+      domNode.textContent = object.name;
+      domNode.id = object._id;
+      domNode.style.top = object.y;
+      domNode.style.left = object.x;
+      domNode.style.height = object.height;
+      domNode.style.width = object.width;
+      domNode.style.background = object.color;
+    }
   });
 };
 //draw(objects);
@@ -94,7 +102,7 @@ class Data {
 
   send = (m) => {
     Server.socket.emit("request", m);
-    console.log("Sended:", this);
+    console.log("Sent:", this);
   }
 
   constructor(opts) {

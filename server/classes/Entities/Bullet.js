@@ -21,7 +21,7 @@ class Bullet extends Entity {
     }
     if (entity.type == "player") {
       entity.health -= 1;
-      entity.hittedBy = this.player;
+      entity.hittedBy = this.player.id;
       this.deleteMe();
       //console.log("[Game]:", this.from.name, "hitted", entity.name, "(" + entity.health + ")");
     }
@@ -29,6 +29,7 @@ class Bullet extends Entity {
       this.deleteMe();
     }
     if (entity.type == "bullet") {
+      this.deleteMe();
     } else {
       this.move = "idle";
       // "BOOOOOOM !!! hit with " + entity.id);

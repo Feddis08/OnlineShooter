@@ -38,6 +38,9 @@ class Entity {
     const id = "XX" + new Date().getTime() + rand.split(".")[1];
     this._id = id;
   }
+  theId() {
+    return this.id;
+  }
   personalTick() {
   }
   tick() {

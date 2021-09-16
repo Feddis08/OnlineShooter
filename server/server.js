@@ -51,6 +51,7 @@ io.on("connection", (socket) => {
     if (message.content != null) {
       message.id = socket.id;
       const outMessage = createChatMessage(message);
+
       if (outMessage) io.emit("Chat", outMessage);
     }
   });
