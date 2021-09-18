@@ -11,7 +11,7 @@ class Bullet extends Entity {
     users.push(this);
   }
   personalTick() {
-    if (this.upTime == 5000) {
+    if (this.upTime == 1500) {
       this.deleteMe();
     }
 

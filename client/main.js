@@ -39,6 +39,7 @@ draw = (objects) => {
 };
 //draw(objects);
 let currentMove = "idle";
+let currentAction = "idle";
 var changes = false;
 keyHandles = () => {
   document.addEventListener("keydown", (evt) => {
@@ -50,7 +51,10 @@ keyHandles = () => {
       case "ArrowLeft":
         if (currentMove != evt.code) {
           if (evt.code == "Space") {
-            m = new Data({ action: "Space" })
+            if (currentAction != evt.code){
+              m = new Data({ action: "Space" })
+              currentAction = evt.code;
+            }
             //Server.socket.emit("request", evt.code);
           } else {
             console.log('xxx', evt)
@@ -66,6 +70,7 @@ keyHandles = () => {
   });
   document.addEventListener("keyup", (evt) => {
     if (evt.code == "Space") {
+      currentAction = "";
       m = new Data({
         move: currentMove
       });
