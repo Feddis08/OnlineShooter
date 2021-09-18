@@ -1,8 +1,10 @@
 var checkMove = require("../modules/Collision.js");
 let data = require("../modules/Data")
+let users = data.users;
 class Entity {
-  constructor(id, name, type, x, y, w, h, color, move) {
+  constructor(id, name, type, x, y, w, h, color, move, init) {
   
+  this.init = init;
   this.toDelete = false;
   this.isPlayer = false;
   this.upTime = 0;
@@ -24,6 +26,7 @@ class Entity {
   this.x2 = 0;
   this.y2 = 0;
   this.getId();
+  if (init) users.push(this);
   }
   moveing(x, y) {
     this.x = x;
