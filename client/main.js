@@ -1,3 +1,4 @@
+var serverData;
 var joined = false;
 const gameBoard = document.querySelector("#gameBoard");
 const status = document.querySelector("#status");
@@ -5,6 +6,8 @@ deleteObject = (object) => {
     const existingNode = gameBoard.querySelector("#" + object._id);
     if( existingNode ){
       gameBoard.removeChild(existingNode);
+      if (object.name == "a bullet"){
+      }
     }
     else {
       console.warn( 'object already removed!!!!')
@@ -37,6 +40,21 @@ draw = (objects) => {
     }
   });
 };
+selfMoving=()=>{
+  serverData.renderEntities.forEach((user, index)=>{
+        if (user.move == "ArrowUp"){user.y += user.step}
+        if (user.move == "ArrowDown"){user.y -= user.step}
+        if (user.move == "ArrowRight"){user.x += user.step}
+        if (user.move == "ArrowLeft"){user.x -= user.step}
+        if (user.move == "idle"){}
+        if (user.toDelete){
+          serverData.renderEntities.splice(index, 1);
+          deleteObject(user);
+        }
+        draw(serverData.renderEntities);
+        return;
+  })
+}
 //draw(objects);
 let currentMove = "idle";
 let currentAction = "idle";
@@ -122,9 +140,12 @@ createChatMessage = () => {
   const dnChatInput = document.querySelector("#chatInput");
   m = new Data({ content: dnChatInput.value });
 }
+tick = () => {
+  selfMoving();
+}
 
 const Server = {
-  //url: "http://10.0.0.118:25545",
+//url: "http://10.0.0.118:25545",
   //url: "http://feddis08.ddns.net:80",
   url: "http://localhost:25545",
   //url: "http://10.0.0.165:25545",
@@ -138,9 +159,12 @@ const Server = {
   },
   start(name) {
     this.socket = io.connect(this.url);
-    this.socket.on("response", (objects) => {
+        setInterval(() => {
+          tick();
+        }, 10);
+    this.socket.on("response", (data) => {
       //this.chat("updating spielfeld");
-      draw(objects);
+      serverData = data;
     });
     this.socket.on("Chat", (message) => {
       console.log(123, message);
@@ -154,10 +178,10 @@ const Server = {
     });
   },
 };
-Server.start(name);
 
 var join = function () {
   if (joined == false) {
+    Server.start(name);
     //  var name = document.getElementById("playerName").value;
     var name = document.querySelector("#playerName").value;
     Server.socket.emit("join", name);

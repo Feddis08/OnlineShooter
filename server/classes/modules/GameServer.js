@@ -1,4 +1,5 @@
 let data = require("./Data")
+let sendingData = require("./SedingData")
 let users = data.users;
 let onlinePlayers = data.onlinePlayers;
 var pmessage = {
@@ -43,16 +44,44 @@ class GameServer {
             }
         })
     }
+    sendData = (user, comment) => {
+        data = new sendingData();
+        data.comment = comment;
+        data.selfUser = user;
+        data.renderEntities = users;
+        this.io.to(user.id).emit("response", data);
+    }
+    sendBroadcast = (comment) => {
+        data = new sendingData();
+        data.comment = comment;
+        data.renderEntities = users;
+        this.io.emit("response", data);
+    }
+    count = 0;
+    sec = 0;
+    clock = () => {
+        if (this.count == 1000) {content = 0; sec = 1;
+        }else{this.sec = 0}
+    }
+    update = () =>{
+        if (this.count == 1000) this.io.emit("response", (users));
+    }
     server() {
+        this.clock();
+        this.update();
         this.change = false;
         this.countOnlinePlayers();
         users.forEach((user, index) => {
             user.tick();
-            if (user.move !== "idle" || user.action !== "idle") {
-                if (user.action && user.actionHandling(user.action)) this.change = true;
+            if (user.lastMove !== user.move || user.lastAction !== user.action){
+                this.sendData(user);
+                if (user.move !== "idle" || user.action !== "idle") {
+                    if (user.action && user.actionHandling(user.action)) this.change = true;
+                        this.sendData(user);
+                }
             }
             if (user.toDelete == true) {
-                this.io.emit("response", users);
+                this.sendBroadcast("delete");
                 if (user.type == "player") {
                     var killer = this.findEntityById(user.hittedBy);
                     pmessage.name = "Server";
@@ -68,15 +97,14 @@ class GameServer {
                 }
                 users.splice(index, 1);
             }
+            if (this.change == true) {
+                //user.action = "idle";
+                this.sendData(user);
+                this.change = false;
+                //console.log(GameServer.change);
+            }
             //  const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
         });
-        if (this.change == true) {
-            //user.action = "idle";
-
-            this.io.emit("response", users);
-            this.change = false;
-            //console.log(GameServer.change);
-        }
     };
 };
 module.exports = GameServer;

@@ -45,8 +45,7 @@ io.on("connection", (socket) => {
   socket.on("request", (message) => {
     users.forEach((user, index) => {
       if (user.id == socket.id) {
-        user.move = message.move;
-        user.action = message.action;
+        user.moveInitial(message.move, message.action);
       }
     });
     if (message.content == "delete"){

@@ -15,18 +15,30 @@ class Entity {
   this.name = name;
   this.type = type;
   this.action = "idle";
+  this.lastAction;
   this.x = x;
   this.y = y;
   this.height = h;
   this.width = w;
   this.color = color;
   this.move = move;
+  this.lastMove;
   this.lastMoveDirection = "ArrowRight";
   this.step = 10;
   this.x2 = 0;
   this.y2 = 0;
   this.getId();
   if (init) users.push(this);
+  }
+  saveLastActions(move, action){
+    this.lastMove = this.move;
+    this.lastAction = this.lastAction;
+
+    this.move = move;
+    this.action = action;
+  }
+  moveInitial(move, action){
+    this.saveLastActions(move, action);
   }
   moveing(x, y) {
     this.x = x;
