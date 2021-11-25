@@ -23,7 +23,6 @@ class Bullet extends Entity {
       entity.health -= 1;
       entity.hittedBy = this.player.id;
       this.deleteMe();
-      //console.log("[Game]:", this.from.name, "hitted", entity.name, "(" + entity.health + ")");
     }
     if (entity.type == "wall") {
       this.deleteMe();

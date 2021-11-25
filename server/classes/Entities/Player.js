@@ -1,5 +1,7 @@
 var Bullet = require("./Bullet.js");
 var Entity = require("./Entity.js");
+let data = require("../modules/Data")
+var viewports = data.viewports;
 class Player extends Entity {
   constructor(id, name) {
     let x = Math.random() * 400;
@@ -8,13 +10,24 @@ class Player extends Entity {
     const height = 100;
     const width = 50;
     let color = "red";
-    super(id, name, type, x, y, width, height, color, "idle");
+    super(id, name, type, x, y, width, height, color, "idle", true);
     this.reloadTime = 0;
     this.health = 10;
     this.hittedBy = "noName";
     this.died = false;
   }
+  /*
+  findViewport = () =>{
+    viewports.forEach((element, index)=>{
+      if (element.from.id == this.id){
+        return element;
+      }
+    })
+  }
+*/
   personalTick() {
+    let viewPort = this.findViewport();
+    viewPort.checkViewport();
     if (this.reloadTime != 0) {
       this.reloadTime -= 10;
     }

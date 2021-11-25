@@ -38,13 +38,15 @@ var checkMove = (entity) => {
 
   var result = collisionDetect(me);
   return {
-    collision: result,
+    collision: result.collision,
+    collisions: result.collisions,
     here: me.here,
   };
 };
 
 var collisionDetect = (me) => {
   let collision = false;
+  let collisions = [];
   users.forEach((otherUser, index) => {
     if (!(otherUser.id == me.id)) {
       const other = {
@@ -57,12 +59,12 @@ var collisionDetect = (me) => {
         //.log("start3");
         if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
           //.log(me.name, ":collision with:", otherUser.name);
-
+          collisions.push(otherUser);
           collision = otherUser;
         }
       }
     }
   });
-  return collision;
+  return {collision, collisions};
 };
 module.exports = checkMove;

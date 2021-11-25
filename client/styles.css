@@ -23,6 +23,12 @@
   background: black;
   overflow: hidden;
 }
+#gameBoard {
+  border-style: solid;
+  width: 500;
+  overflow: hidden;
+  height: 500;
+}
 #chat-window {
   position: absolute;
   top: 0;

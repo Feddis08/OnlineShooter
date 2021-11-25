@@ -1,5 +1,6 @@
 Data={
     users: [],
+    viewports: [],
     onlinePlayers: 0
 }
 

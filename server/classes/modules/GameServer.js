@@ -20,7 +20,6 @@ class GameServer {
         }, 10);
     };
     findUser(name, isId){
-        console.log(users)
         users.forEach((user, index)=>{
             if (isId == true){
                 if (user.id == name){
@@ -43,16 +42,27 @@ class GameServer {
             }
         })
     }
+    send = (user, message) =>{
+        if (user.isPlayer){
+            this.io.to(user.id).emit("response", message);
+        }
+    }
+    broadcast = (message) =>{
+        this.io.emit("response", message);
+    }
     server() {
         this.change = false;
         this.countOnlinePlayers();
         users.forEach((user, index) => {
             user.tick();
             if (user.move !== "idle" || user.action !== "idle") {
-                if (user.action && user.actionHandling(user.action)) this.change = true;
+                if (user.action && user.actionHandling(user.action)){
+                   let viewPort = user.findViewport();
+                   this.send(user, viewPort.render);
+                }
             }
             if (user.toDelete == true) {
-                this.io.emit("response", users);
+                this.broadcast(users);
                 if (user.type == "player") {
                     var killer = this.findEntityById(user.hittedBy);
                     pmessage.name = "Server";
@@ -70,13 +80,6 @@ class GameServer {
             }
             //  const player = new Entity("asdfasdf", "wand", "entity", 350, 400);
         });
-        if (this.change == true) {
-            //user.action = "idle";
-
-            this.io.emit("response", users);
-            this.change = false;
-            //console.log(GameServer.change);
-        }
     };
 };
 module.exports = GameServer;

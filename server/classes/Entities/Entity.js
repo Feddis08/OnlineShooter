@@ -1,6 +1,31 @@
 var checkMove = require("../modules/Collision.js");
+var center = require("../modules/center.js");
 let data = require("../modules/Data")
-let users = data.users;
+var users = data.users;
+var viewports = data.viewports;
+class Viewport {
+  constructor(height, width, from){
+    this.height = height;
+    this.width = width;
+    this.x = 0;
+    this.y = 0;
+    this.from = from;
+    this.render;
+    //viewports.push(this);
+  }
+  checkViewport = () =>{
+    const coords = this.from.centerEntity({willCenter:this, tregetObject: this.from});
+    let viewPortMe = {
+      id: "Viewport",
+      here: coords
+    };
+    this.x = coords.x;
+    this.y = coords.y;
+    let result = checkMove(this)
+    this.render = result.collisions;
+
+  }
+}
 class Entity {
   constructor(id, name, type, x, y, w, h, color, move, init) {
   
@@ -27,6 +52,7 @@ class Entity {
   this.y2 = 0;
   this.getId();
   if (init) users.push(this);
+  viewports.push(new Viewport(500, 500, this));
   }
   moveing(x, y) {
     this.x = x;
@@ -40,6 +66,22 @@ class Entity {
     const rand = Math.random().toString();
     const id = "XX" + new Date().getTime() + rand.split(".")[1];
     this._id = id;
+  }
+  centerEntity({willCenter, tregetObject}) {
+    const { centerX, centerY } = center(tregetObject);
+    return {
+      x: centerX - willCenter.width / 2,
+      y: centerY - willCenter.height / 2
+    }
+  }
+  findViewport(){
+    let result;
+    viewports.forEach((element, index)=>{
+      if (element.from.id == this.id){
+        result = element;
+      }
+    })
+    return result;
   }
   theId() {
     return this.id;

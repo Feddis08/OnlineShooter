@@ -32,15 +32,14 @@ io.on("connection", (socket) => {
   socket.on("join", (playerName) => {
     const player = new Player(id, playerName);
     player.isPlayer = true;
-    users.push(player); //, bullet);
+    player.x = 50;
+    player.y = 50;
     console.log("[Server]: user joined:", playerName);
     pmessage.name = "Server";
     pmessage.content = playerName + " joined the game";
     io.emit("Chat", pmessage);
     pmessage.id = socket.id;
     pmessage.fromServer = true;
-    //    console.log(GameServer.users);
-    io.emit("response", users);
   });
   socket.on("request", (message) => {
     users.forEach((user, index) => {
@@ -65,7 +64,6 @@ io.on("connection", (socket) => {
         user.toDelete = true;
       }
     });
-    //console.log(id);
   });
 });
 
