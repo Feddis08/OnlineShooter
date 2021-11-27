@@ -13,7 +13,6 @@
 </head>
 
 <body>
-
   <h1>onlineShooter by Feddis08</h1>
   <label for="fname">Name:</label><br />
   <input type="text" id="playerName" /><br />
@@ -24,7 +23,7 @@
     <div id="chat"></div>
     <div id="input">
       <input type="text" id="chatInput"></input><br />
-      <button onclick="createChatMessage();">send</button>
+      <button id="messageSendButton" onclick="createChatMessage();">send message</button>
     </div>
     <table border=1>
       <tr>
@@ -38,7 +37,9 @@
         <td>
           <i class="fas fa-caret-left" id="ArrowLeft"></i>
         </td>
-        <td></td>
+        <td>
+          <i class="fas fa-bullseye" id="shootIcon"></i>
+        </td>
         <td>
           <i class="fas fa-caret-right" id="ArrowRight"></i>
         </td>

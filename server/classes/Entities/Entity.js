@@ -52,7 +52,7 @@ class Entity {
   this.y2 = 0;
   this.getId();
   if (init) users.push(this);
-  viewports.push(new Viewport(500, 500, this));
+  viewports.push(new Viewport(800, 600, this));
   }
   moveing(x, y) {
     this.x = x;
@@ -92,6 +92,7 @@ class Entity {
     this.personalTick();
     this.online = data.onlinePlayers;
     this.upTime += 10;
+    this.findViewport().checkViewport();
   }
   deleteMe() {
     this.toDelete = true;

@@ -1,4 +1,5 @@
 var joined = false;
+const shootIcon = document.querySelector("#shootIcon");
 const arrowUp = document.querySelector("#ArrowUp");
 const arrowDown = document.querySelector("#ArrowDown");
 const arrowRight = document.querySelector("#ArrowRight");
@@ -49,6 +50,10 @@ checkMoveArrows = (player) => {
   arrowDown.style.color = "gray";
   arrowRight.style.color = "gray";
   arrowLeft.style.color = "gray";
+  shootIcon.style.color = "gray";
+  if (player.action == "Space"){
+    shootIcon.style.color = "black";
+  }
   if (player.move == "ArrowUp"){
     arrowUp.style.color = "black";
   }
@@ -81,7 +86,7 @@ draw = (objects) => {
   objects.forEach((object) => {
     if (object.id == Server.socket.id) {
       player = object;
-      status.innerHTML = `HP: ${object.health} | Online: ${object.online}, "Coords: ", ${object.x}, ${object.y}`; 
+      status.innerHTML = `HP: ${object.health} | Online: ${object.online} | Entities in view: ${objects.length} | Coords: ${object.x}, ${object.y}`; 
       if (object.toDelete == true) {
         status.innerHTML = object.deleteInfo;
      //   deleteObject(object);
@@ -107,10 +112,8 @@ culculatePossisions = (objects) =>{
         domNode.style.top = (object.y - player.y) + camPlayer.y;
         domNode.style.left = (object.x - player.x) + camPlayer.x;
         domNode.style.border = "solid #ccc";
-        domNode.style.borderWidth = "1xp";
         if (object.id == Server.socket.id){
           domNode.style.border = "solid";
-          domNode.style.border.width = "1xp";
           domNode.style.top = camPlayer.y;
           domNode.style.left = camPlayer.x;
           domNode.style.background = object.color;
