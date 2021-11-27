@@ -58,7 +58,9 @@ class GameServer {
             if (user.move !== "idle" || user.action !== "idle") {
                 if (user.action && user.actionHandling(user.action)){
                    let viewPort = user.findViewport();
-                   this.send(user, viewPort.render);
+                   viewPort.render.forEach(user =>{
+                       if (user.isPlayer)this.send(user, viewPort.render);
+                   })
                 }
             }
             if (user.toDelete == true) {

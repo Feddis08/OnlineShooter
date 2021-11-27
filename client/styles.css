@@ -25,9 +25,9 @@
 }
 #gameBoard {
   border-style: solid;
-  width: 500;
+  width: 800;
   overflow: hidden;
-  height: 500;
+  height: 600;
 }
 #chat-window {
   position: absolute;

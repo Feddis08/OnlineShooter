@@ -1,4 +1,8 @@
 var joined = false;
+const arrowUp = document.querySelector("#ArrowUp");
+const arrowDown = document.querySelector("#ArrowDown");
+const arrowRight = document.querySelector("#ArrowRight");
+const arrowLeft = document.querySelector("#ArrowLeft");
 const gameBoard = document.querySelector("#gameBoard");
 const status = document.querySelector("#status");
 var oldUsers = [];
@@ -35,11 +39,29 @@ centerEntity = ({willCenter, tregetObject}) =>{
   }
 }
 var viewport = {
-  width:500,
-  height:500,
+  width:800,
+  height:600,
   x:0,
   y:0
 };
+checkMoveArrows = (player) => {
+  arrowUp.style.color = "gray";
+  arrowDown.style.color = "gray";
+  arrowRight.style.color = "gray";
+  arrowLeft.style.color = "gray";
+  if (player.move == "ArrowUp"){
+    arrowUp.style.color = "black";
+  }
+  if (player.move == "ArrowDown"){
+    arrowDown.style.color = "black";
+  }
+  if (player.move == "ArrowRight"){
+    arrowRight.style.color = "black";
+  }
+  if (player.move == "ArrowLeft"){
+    arrowLeft.style.color = "black";
+  }
+}
 preDraw = (objects) =>{
   let player2 = player;
   objects.forEach(( xplayer) => {
@@ -47,6 +69,7 @@ preDraw = (objects) =>{
       let coords = centerEntity({willCenter:player, tregetObject:viewport});
       player2.x = coords.x;
       player2.y = coords.y;
+      checkMoveArrows(player); 
     }
   } )
   return player2;
@@ -58,7 +81,6 @@ draw = (objects) => {
   objects.forEach((object) => {
     if (object.id == Server.socket.id) {
       player = object;
-      string = 
       status.innerHTML = `HP: ${object.health} | Online: ${object.online}, "Coords: ", ${object.x}, ${object.y}`; 
       if (object.toDelete == true) {
         status.innerHTML = object.deleteInfo;
@@ -82,10 +104,13 @@ culculatePossisions = (objects) =>{
         domNode.style.background = object.color;
         domNode.style.height = object.height;
         domNode.style.width = object.width;
-        domNode.style.top = (player.y + object.y) - camPlayer.y;
-        domNode.style.left = (player.x + object.x) - camPlayer.x;
+        domNode.style.top = (object.y - player.y) + camPlayer.y;
+        domNode.style.left = (object.x - player.x) + camPlayer.x;
+        domNode.style.border = "solid #ccc";
+        domNode.style.borderWidth = "1xp";
         if (object.id == Server.socket.id){
-          console.log( 111 )
+          domNode.style.border = "solid";
+          domNode.style.border.width = "1xp";
           domNode.style.top = camPlayer.y;
           domNode.style.left = camPlayer.x;
           domNode.style.background = object.color;
@@ -135,6 +160,7 @@ keyHandles = () => {
       m = new Data({
         move: "idle"
       });
+      checkMoveArrows(m);
       //Server.socket.emit("request", currentMove);
     }
   })
