@@ -50,17 +50,62 @@ class GameServer {
     broadcast = (message) =>{
         this.io.emit("response", message);
     }
+    clock = () =>{
+
+        if (this.milli == 1000){
+            this.sec + 1;
+            this.milli = 0;
+            return
+        }
+        if (this.sec == 1){
+            this.milli = 0;
+            this.sec = 0;
+            return
+        }else{
+            this.milli = this.milli + 10;
+            return
+        }
+    }
+    milli = 0;
+    sec = 0;
+    update = (user) =>{
+        if (this.sec == 1){
+            let viewPort = user.findViewport();
+            if (user.isPlayer) {
+                this.send(viewPort.from, viewPort.render);
+                console.log("made n update")
+            }
+        }
+    }
     server() {
         this.change = false;
         this.countOnlinePlayers();
+        this.clock();
         users.forEach((user, index) => {
+            //this.update(user);
             user.tick();
-            if (user.move !== "idle" || user.action !== "idle") {
-                if (user.action && user.actionHandling(user.action)){
-                   let viewPort = user.findViewport();
-                   viewPort.render.forEach(user =>{
-                       if (user.isPlayer)this.send(user, viewPort.render);
-                   })
+            if (user.move !== "idle" || user.action !== "idle"){
+                user.actionHandling(user.action);
+            }
+            let viewPort = user.findViewport();
+            if (viewPort.change){
+                if (user.isPlayer) {
+                    viewPort.change = false;
+                    this.send(viewPort.from, viewPort.render);
+                }
+            }
+            if (user.lastMove !== user.move || user.lastAction !== user.action){
+                if (user.lastMove !== user.move){
+                    user.lastMove = user.move;
+                    viewPort.render.forEach((object, index)=>{
+                        if (user.isPlayer) {
+                            this.send(object, object.findViewport().render);
+                        }
+                    })
+                }
+                if (user.lastAction !== user.action){
+                    user.lastAction = user.action;
+                        if (user.isPlayer)this.send(user, viewPort.render);
                 }
             }
             if (user.toDelete == true) {

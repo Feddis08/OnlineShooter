@@ -1,5 +1,5 @@
 let data = require("./Data")
-let users = data .users;
+let users = data.users;
 var checkMove = (entity) => {
   // clone player pos w/o changing object
   const direction = entity.move;
@@ -40,6 +40,7 @@ var checkMove = (entity) => {
   return {
     collision: result.collision,
     collisions: result.collisions,
+    collistionsString: result.collisionsString,
     here: me.here,
   };
 };
@@ -63,8 +64,10 @@ var collisionDetect = (me) => {
           collision = otherUser;
         }
       }
+
     }
   });
-  return {collision, collisions};
+  const collisionsString = collisions.map( coll => coll.id ).sort().join( "-" );
+  return {collision, collisions, collisionsString};
 };
 module.exports = checkMove;

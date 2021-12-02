@@ -47,6 +47,10 @@
   width: 404;
   background-color: gray;
 }
+#messageSendButton {
+  background-color: green;
+  
+}
 input:focus {
   background: gray;
   width: 400;

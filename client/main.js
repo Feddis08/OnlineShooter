@@ -68,13 +68,12 @@ checkMoveArrows = (player) => {
   }
 }
 preDraw = (objects) =>{
-  let player2 = player;
+  let player2 = {...player};
   objects.forEach(( xplayer) => {
     if (xplayer.id == Server.socket.id) {
-      let coords = centerEntity({willCenter:player, tregetObject:viewport});
+      let coords = centerEntity({willCenter:xplayer, tregetObject:viewport});
       player2.x = coords.x;
       player2.y = coords.y;
-      checkMoveArrows(player); 
     }
   } )
   return player2;
@@ -95,9 +94,9 @@ draw = (objects) => {
     //const existingNode = gameBoard.querySelector("#" + object._id);
     //if (existingNode) gameBoard.removeChild(existingNode);
   })
-  culculatePossisions(objects);
+ calculatePossisions(objects);
 }
-culculatePossisions = (objects) =>{
+calculatePossisions = (objects) =>{
     objects.forEach((object, index)=>{
       deleteObject(object);
       if( ! (object.toDelete)) {
@@ -126,6 +125,9 @@ let currentMove = "idle";
 let currentAction = "idle";
 var changes = false;
 keyHandles = () => {
+  document.addEventListener("keypress", (evnt)=>{
+    checkMoveArrows(player);
+  })
   document.addEventListener("keydown", (evt) => {
     switch (evt.code) {
       case "Space":
@@ -205,28 +207,67 @@ createChatMessage = () => {
   m = new Data({ content: dnChatInput.value });
 }
 
+selfMoving = () => {
+  //Server.objects = Server.tempObjects;
+  let someMove = false;
+  Server.objects.forEach((player, index)=>{
+    if (player.move !== "idle"){
+      if (player.move == "ArrowRight"){
+        player.x = player.x + player.step; 
+        someMove = true;
+      }
+      if (player.move == "ArrowLeft"){
+        player.x = player.x - player.step;  
+        someMove = true;
+      }
+      if (player.move == "ArrowUp"){
+        player.y = player.y - player.step;  
+        someMove = true;
+      }
+      if (player.move == "ArrowDown"){
+        player.y = player.y + player.step;  
+        someMove = true;
+      }
+    }
+  })
+  if (someMove)draw(Server.objects);
+}
+
+
+update = () =>{
+  selfMoving();
+  checkMoveArrows(player);
+}
+
 const Server = {
   //url: "http://10.0.0.118:25545",
-  //url: "http://feddis08.ddns.net:80",
+  //url: "http://feddis08.ddns.net:25545",
   url: "http://localhost:25545",
   //url: "http://10.0.0.165:25545",
   //url: "http://192.168.8.191:25545",
   //url: "http://192.168.10.252:25545",
   socket: null,
+  objects: [],
+  oldObjects: [],
   chat(text) {
     const chat = document.querySelector("#chat");
     console.log(chat, text);
     chat.innerHTML = text + "<br>" + chat.innerHTML;
   },
   start(name) {
+    setInterval(() => {
+        update();
+    }, 10);
     this.socket = io.connect(this.url);
     this.socket.on("response", (objects) => {
-      console.log( 213, objects );
-      oldUsers.forEach((user, index)=>{
+    //draw(objects);
+      Server.oldObjects.forEach((user, index)=>{
         deleteObject(user);
       })
-      oldUsers = objects;
+      Server.oldObjects = objects;
       draw(objects);
+      Server.objects = objects;
+
     });
     this.socket.on("Chat", (message) => {
       this.chat("[" + message.name + "]: " + message.content);
@@ -249,8 +290,9 @@ var join = function () {
     joined = true;
   }
 };
-
+/*
 document.addEventListener( 'DOMContentLoaded', () =>{
     document.querySelector("#playerName").value = "asdf";
     document.querySelector("#join").click();
 })
+*/

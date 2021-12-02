@@ -10,7 +10,9 @@ class Viewport {
     this.x = 0;
     this.y = 0;
     this.from = from;
-    this.render;
+    this.render = [];
+    this.oldIDString = "";
+    this.change = false;
     //viewports.push(this);
   }
   checkViewport = () =>{
@@ -22,7 +24,13 @@ class Viewport {
     this.x = coords.x;
     this.y = coords.y;
     let result = checkMove(this)
-    this.render = result.collisions;
+    if (result.collistionsString == this.oldIDString){
+      //console.log(222, result )
+    }else{
+      this.oldIDString = result.collistionsString;
+      this.change = true;
+    }
+      this.render = result.collisions;
 
   }
 }
@@ -40,16 +48,19 @@ class Entity {
   this.name = name;
   this.type = type;
   this.action = "idle";
+  this.lastAction = "idle";
   this.x = x;
   this.y = y;
   this.height = h;
   this.width = w;
   this.color = color;
   this.move = move;
+  this.lastMove = "idle";
   this.lastMoveDirection = "ArrowRight";
   this.step = 10;
   this.x2 = 0;
   this.y2 = 0;
+  this.oldIds = "xxxx";
   this.getId();
   if (init) users.push(this);
   viewports.push(new Viewport(800, 600, this));
