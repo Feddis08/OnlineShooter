@@ -17,6 +17,13 @@ deleteObject = (object) => {
     }
 
 }
+const selfChangedMove = (move) => {
+  Server.objects.forEach((player, index)=>{
+    if (player.id == Server.socket.id){
+    player.move = move;  
+    }
+  })
+}
 getPlayer = () =>{
   let ownPlayer;
   Server.objects.forEach((player, index)=>{
@@ -134,8 +141,8 @@ let currentMove = "idle";
 let currentAction = "idle";
 var changes = false;
 keyHandles = () => {
-  document.addEventListener("keypress", (evnt)=>{
-    checkMoveArrows(player);
+  document.addEventListener("keypress", (evt)=>{
+    selfChangedMove(evt.code);
   })
   document.addEventListener("keydown", (evt) => {
     switch (evt.code) {
@@ -144,6 +151,7 @@ keyHandles = () => {
       case "ArrowDown":
       case "ArrowRight":
       case "ArrowLeft":
+        selfChangedMove(evt.code);
         if (currentMove != evt.code) {
           if (evt.code == "Space") {
             if (currentAction != evt.code){
@@ -162,6 +170,7 @@ keyHandles = () => {
     }
   });
   document.addEventListener("keyup", (evt) => {
+    selfChangedMove(evt.code);
     if (evt.code == "Space") {
       currentAction = "";
       m = new Data({
@@ -201,13 +210,8 @@ class Data {
 
   send = (m) => {
     Server.socket.emit("request", m);
-  Server.objects.forEach((player, index)=>{
-    if (player.id == Server.socket.id){
-    player.move = m.move;  
-    //console.log(Server.objects)
-    }
-  })
     //console.log(player)
+    selfChangedMove();
   }
 
   constructor(opts) {
@@ -283,7 +287,7 @@ update = () =>{
 
 const Server = {
   //url: "http://10.0.0.118:25545",
-  //url: "http://feddis08.ddns.net:25545",
+  //url: "http://feddis08-network.ddns.net:25545",
   url: "http://localhost:25545",
   //url: "http://10.0.0.165:25545",
   //url: "http://192.168.8.191:25545",
