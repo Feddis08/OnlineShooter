@@ -13,11 +13,20 @@ deleteObject = (object) => {
       gameBoard.removeChild(existingNode);
     }
     else {
-      console.warn( 'object already removed!!!!')
+      //console.warn( 'object already removed!!!!')
     }
 
 }
-
+getPlayer = () =>{
+  let ownPlayer;
+  Server.objects.forEach((player, index)=>{
+    if (player.id == Server.socket.id){
+      player = ownPlayer;
+      console.log(Server.objects)
+    }
+  })
+  return ownPlayer;
+}
 center = (object) =>{
   let x=object.x;
   let y=object.y;
@@ -192,6 +201,13 @@ class Data {
 
   send = (m) => {
     Server.socket.emit("request", m);
+  Server.objects.forEach((player, index)=>{
+    if (player.id == Server.socket.id){
+    player.move = m.move;  
+    //console.log(Server.objects)
+    }
+  })
+    //console.log(player)
   }
 
   constructor(opts) {
@@ -206,11 +222,8 @@ createChatMessage = () => {
   const dnChatInput = document.querySelector("#chatInput");
   m = new Data({ content: dnChatInput.value });
 }
-
-selfMoving = () => {
-  //Server.objects = Server.tempObjects;
+moveing = (player) =>{
   let someMove = false;
-  Server.objects.forEach((player, index)=>{
     if (player.move !== "idle"){
       if (player.move == "ArrowRight"){
         player.x = player.x + player.step; 
@@ -229,8 +242,37 @@ selfMoving = () => {
         someMove = true;
       }
     }
-  })
   if (someMove)draw(Server.objects);
+}
+actionHandling = (player) =>{
+    var result = checkMove(player);
+      let stop = true;
+      let otherStops = false;
+      if (result.collision == false){
+        //this.moveing(this);
+        stop = false;
+        otherStops = false;
+      }
+      player.collisionTable.table.forEach((objectType, index)=>{
+        result.collisions.forEach((entity, index)=>{
+          if (entity.type == objectType){
+            //console.log(entity.type, objectName)
+            stop = false;
+          }else{
+            otherStops = true;
+            stop = true;
+          }
+        })
+      })
+      if (otherStops)stop =true;
+      if (!(stop) || !(result.collision))moveing(player);
+      return true;
+  }
+selfMoving = () => {
+  //Server.objects = Server.tempObjects;
+  Server.objects.forEach((player, index)=>{
+    actionHandling(player);
+  })
 }
 
 
@@ -261,6 +303,7 @@ const Server = {
     this.socket = io.connect(this.url);
     this.socket.on("response", (objects) => {
     //draw(objects);
+      console.log("reseived from Server a response:", objects);
       Server.oldObjects.forEach((user, index)=>{
         deleteObject(user);
       })

@@ -5,6 +5,7 @@ class Wall extends Entity {
     var color = "black";
     var name = "";
     super(id, name, type, x, y, w, h, color, "idle", init);
+    this.collisionTable.table = ["wall"]
   }
 }
 

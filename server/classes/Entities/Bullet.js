@@ -4,10 +4,11 @@ let users = data.users;
 class Bullet extends Entity {
   constructor(x, y, shootDirection, player) {
     const id = "id of a bullt";
-    const name = "a bullet";
+    const name = "";
     const type = "bullet";
     super(id, name, type, x, y, 20, 20, "blue", shootDirection);
     this.player = player;
+    this.collisionTable.table = ["air", "bullet"];
     users.push(this);
   }
   personalTick() {
@@ -30,7 +31,6 @@ class Bullet extends Entity {
     if (entity.type == "bullet") {
       this.deleteMe();
     } else {
-      this.move = "idle";
       // "BOOOOOOM !!! hit with " + entity.id);
     }
   }

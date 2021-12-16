@@ -45,6 +45,7 @@ class GameServer {
     send = (user, message) =>{
         if (user.isPlayer){
             this.io.to(user.id).emit("response", message);
+            //console.log(user.x)
         }
     }
     broadcast = (message) =>{
@@ -84,9 +85,7 @@ class GameServer {
         users.forEach((user, index) => {
             //this.update(user);
             user.tick();
-            if (user.move !== "idle" || user.action !== "idle"){
-                user.actionHandling(user.action);
-            }
+            user.actionHandling(user.action);
             let viewPort = user.findViewport();
             if (viewPort.change){
                 if (user.isPlayer) {

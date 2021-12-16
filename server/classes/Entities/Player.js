@@ -66,7 +66,6 @@ class Player extends Entity {
     }
   }
   collisionWith(entity) {
-    this.move = "idle";
   }
 }
 

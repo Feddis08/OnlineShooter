@@ -60,18 +60,30 @@ class Entity {
   this.step = 10;
   this.x2 = 0;
   this.y2 = 0;
-  this.oldIds = "xxxx";
+  this.collisionTableString = "";
   this.getId();
   if (init) users.push(this);
-  viewports.push(new Viewport(800, 600, this));
+  viewports.push(new Viewport(800, 800, this));
   }
-  moveing(x, y) {
-    this.x = x;
-    this.y = y;
+  collisionTable =  {
+    table: ["player"],
+  }
+  moveing(player) {
+    if (player.move == "ArrowRight"){
+      player.x = player.x + player.step; 
+    }
+    if (player.move == "ArrowLeft"){
+      player.x = player.x - player.step;  
+    }
+    if (player.move == "ArrowUp"){
+      player.y = player.y - player.step;  
+    }
+    if (player.move == "ArrowDown"){
+      player.y = player.y + player.step;  
+    }
   }
   collisionWith(entity) {
-    //this.action = "idle";
-    // "collision: " + this.id + " with " + entity.id);
+    //is in use! do not remove!
   }
   getId() {
     const rand = Math.random().toString();
@@ -98,6 +110,7 @@ class Entity {
     return this.id;
   }
   personalTick() {
+    //is in use! do not remove!
   }
   tick() {
     this.personalTick();
@@ -109,24 +122,40 @@ class Entity {
     this.toDelete = true;
   }
   shoot() {
+    //is in use! do not remove!
   }
   actionHandling(action) {
+    let stop = true;
+    let otherStops = false;
     this.action = action;
     if (this.action == "Space") {
       this.shoot();
-    } else {
-      var result = checkMove(this);
-      if (result.collision === false) {
-        this.moveing(result.here.x1, result.here.y1);
-        return true;
-      } else {
-        this.collisionWith(result.collision);
-        // REF: wir bruachen bei collision nur updates hochschicken
-        // wenn die kollision einen effekt hat.. zb NICHT wenn ich
-        // gegen die wand laufe
-        return true;
-      }
     }
+    let result = checkMove(this);
+    this.collisionWith(result.collision);
+    if (result.collision == false){
+      stop = false;
+      otherStops = false;
+    }
+    if (this.move == "idle")return;
+    this.collisionTable.table.forEach((objectType, index)=>{
+      result.collisions.forEach((entity, index)=>{
+        if (entity.type == objectType){
+          stop = false;
+        }else{
+          stop = true;
+          otherStops = true;
+        }
+      })
+    })
+    if (otherStops)stop = true;
+    if(stop){
+      this.move = "idle";
+    }
+    if (!(stop) || !(result.collision)){
+      this.moveing(this);
+    }
+    return true;
   }
 }
 
