@@ -17,7 +17,7 @@ deleteObject = (object) => {
     }
 
 }
-const selfChangedMove = (move) => {
+selfChangedMove = (move) => {
   Server.objects.forEach((player, index)=>{
     if (player.id == Server.socket.id){
     player.move = move;  
@@ -170,7 +170,7 @@ keyHandles = () => {
     }
   });
   document.addEventListener("keyup", (evt) => {
-    selfChangedMove(evt.code);
+    selfChangedMove("idle");
     if (evt.code == "Space") {
       currentAction = "";
       m = new Data({
@@ -211,7 +211,7 @@ class Data {
   send = (m) => {
     Server.socket.emit("request", m);
     //console.log(player)
-    selfChangedMove();
+    selfChangedMove(m.move);
   }
 
   constructor(opts) {
