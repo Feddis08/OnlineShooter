@@ -7,24 +7,17 @@ class Player extends Entity {
     let x = Math.random() * 400;
     let y = Math.random() * 400;
     const type = "player";
-    const height = 100;
-    const width = 50;
+    const height = 60;
+    const width = 60;
     let color = "red";
     super(id, name, type, x, y, width, height, color, "idle", true);
     this.reloadTime = 0;
     this.health = 10;
     this.hittedBy = "noName";
     this.died = false;
+    this.collisionTable.table = ["all"];
+    this.new = true;
   }
-  /*
-  findViewport = () =>{
-    viewports.forEach((element, index)=>{
-      if (element.from.id == this.id){
-        return element;
-      }
-    })
-  }
-*/
   personalTick() {
     let viewPort = this.findViewport();
     viewPort.checkViewport();

@@ -4,7 +4,7 @@ let data = require("./classes/modules/Data")
 let users = data.users;
 const GameServer = require("./classes/modules/GameServer");
 var app = express();
-var port = 25545;
+var port = 80;
 var socket = require("socket.io");
 var server = app.listen(port, function () {
   console.log("|WebServer: starting at port: " + port + " ...");
@@ -14,12 +14,7 @@ var io = socket(server);
 const gameServer = new GameServer(io);
 var checkMove = require("./classes/modules/Collision.js");
 var createChatMessage = require("./classes/modules/ChatServer.js");
-var Entity = require("./classes/Entities/Entity.js");
-var DefaultMap = require("./classes/maps/default.js");
 var Player = require("./classes/Entities/Player.js");
-var Wall = require("./classes/Entities/Wall.js");
-var Bullet = require("./classes/Entities/Bullet.js");
-var onlinePlayers = 0;
 var pmessage = {
   name: "",
   id: "",
@@ -32,8 +27,8 @@ io.on("connection", (socket) => {
   socket.on("join", (playerName) => {
     const player = new Player(id, playerName);
     player.isPlayer = true;
-    player.x = 50;
-    player.y = 50;
+    player.x = -50;
+    player.y = -50;
     console.log("[Server]: user joined:", playerName);
     pmessage.name = "Server";
     pmessage.content = playerName + " joined the game";
@@ -67,7 +62,6 @@ io.on("connection", (socket) => {
   });
 });
 
-const map = new DefaultMap(true);
 
 
 /*

@@ -1,3 +1,4 @@
+
 var joined = false;
 const shootIcon = document.querySelector("#shootIcon");
 const arrowUp = document.querySelector("#ArrowUp");
@@ -18,7 +19,7 @@ deleteObject = (object) => {
 
 }
 selfChangedMove = (move) => {
-  Server.objects.forEach((player, index)=>{
+  Server.render.forEach((player, index)=>{
     if (player.id == Server.socket.id){
     player.move = move;  
     }
@@ -26,7 +27,7 @@ selfChangedMove = (move) => {
 }
 getPlayer = () =>{
   let ownPlayer;
-  Server.objects.forEach((player, index)=>{
+  Server.render.forEach((player, index)=>{
     if (player.id == Server.socket.id){
       player = ownPlayer;
       console.log(Server.objects)
@@ -126,9 +127,7 @@ calculatePossisions = (objects) =>{
         domNode.style.width = object.width;
         domNode.style.top = (object.y - player.y) + camPlayer.y;
         domNode.style.left = (object.x - player.x) + camPlayer.x;
-        domNode.style.border = "solid #ccc";
         if (object.id == Server.socket.id){
-          domNode.style.border = "solid";
           domNode.style.top = camPlayer.y;
           domNode.style.left = camPlayer.x;
           domNode.style.background = object.color;
@@ -222,6 +221,37 @@ class Data {
     this.send(this);
   }
 }
+class Viewport {
+  constructor(height, width, from){
+    this.height = height;
+    this.width = width;
+    this.x = 0;
+    this.y = 0;
+    this.from = from;
+    this.render = [];
+    this.oldIDString = "";
+    this.change = false;
+    //viewports.push(this);
+  }
+  checkViewport = () =>{
+    const coords = centerEntity({willCenter:this, tregetObject:Server.player});
+    let viewPortMe = {
+      id: "Viewport",
+      here: coords
+    };
+    this.x = coords.x;
+    this.y = coords.y;
+    let result = checkMove(this, true)
+    if (result.collistionsString == this.oldIDString){
+      //console.log(222, result )
+    }else{
+      this.oldIDString = result.collistionsString;
+      this.change = true;
+    }
+      this.render = result.collisions;
+
+  }
+}
 createChatMessage = () => {
   const dnChatInput = document.querySelector("#chatInput");
   m = new Data({ content: dnChatInput.value });
@@ -258,6 +288,9 @@ actionHandling = (player) =>{
         otherStops = false;
       }
       player.collisionTable.table.forEach((objectType, index)=>{
+      if (objectType == "all"){
+        stop = false;
+      }else{
         result.collisions.forEach((entity, index)=>{
           if (entity.type == objectType){
             //console.log(entity.type, objectName)
@@ -267,6 +300,7 @@ actionHandling = (player) =>{
             stop = true;
           }
         })
+      }
       })
       if (otherStops)stop =true;
       if (!(stop) || !(result.collision))moveing(player);
@@ -274,27 +308,48 @@ actionHandling = (player) =>{
   }
 selfMoving = () => {
   //Server.objects = Server.tempObjects;
-  Server.objects.forEach((player, index)=>{
+  Server.render.forEach((player, index)=>{
     actionHandling(player);
   })
 }
 
 
 update = () =>{
+  if (Server.gotPlayer){
+  Server.allEntities = [];
+  Server.allEntities = [...Server.blocks];
+  Server.objects.forEach((entity, index)=>{
+    Server.allEntities.push(entity);
+  })
+  let user = Server.player;
+  while (gameBoard.lastElementChild) {
+    gameBoard.removeChild(gameBoard.lastElementChild);
+  }
+  Server.viewPort.checkViewport();
+  viewPort = Server.viewPort;
+  Server.render = Server.viewPort.render;
+  draw(Server.render)
   selfMoving();
   checkMoveArrows(player);
+  }
 }
 
 const Server = {
   //url: "http://10.0.0.118:25545",
-  //url: "http://feddis08-network.ddns.net:25545",
-  url: "http://localhost:25545",
+  //url: "http://feddis08-network.ddns.net:80",
+  url: "http://localhost:80",
   //url: "http://10.0.0.165:25545",
   //url: "http://192.168.8.191:25545",
   //url: "http://192.168.10.252:25545",
   socket: null,
+  blocks: [],
+  player,
+  viewPort: "",
+  render: "",
+  allEntities: [],
   objects: [],
   oldObjects: [],
+  gotPlayer: false,
   chat(text) {
     const chat = document.querySelector("#chat");
     console.log(chat, text);
@@ -308,11 +363,24 @@ const Server = {
     this.socket.on("response", (objects) => {
     //draw(objects);
       console.log("reseived from Server a response:", objects);
+      console.log(Server.render);
+      objects.forEach((obj, index)=>{
+        if (obj.id == Server.socket.id){
+          Server.player = obj;
+          if (this.gotPlayer == false){
+            this.gotPlayer = true;
+            Server.viewPort = new Viewport(800, 800, Server.player);
+          }
+        }
+        if (obj.type == "block"){
+          Server.blocks.push(obj);
+        }
+      })
       Server.oldObjects.forEach((user, index)=>{
         deleteObject(user);
       })
       Server.oldObjects = objects;
-      draw(objects);
+      //draw(objects);
       Server.objects = objects;
 
     });

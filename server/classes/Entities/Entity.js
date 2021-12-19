@@ -1,6 +1,7 @@
 var checkMove = require("../modules/Collision.js");
 var center = require("../modules/center.js");
-let data = require("../modules/Data")
+let data = require("../modules/Data");
+const e = require("cors");
 var users = data.users;
 var viewports = data.viewports;
 class Viewport {
@@ -45,6 +46,7 @@ class Entity {
   this.deleteInfo = "nothing";
   this.collision = false;
   this.id = id;
+  this.UUID;
   this.name = name;
   this.type = type;
   this.action = "idle";
@@ -62,6 +64,7 @@ class Entity {
   this.y2 = 0;
   this.collisionTableString = "";
   this.getId();
+  this.createUUID();
   if (init) users.push(this);
   viewports.push(new Viewport(800, 800, this));
   }
@@ -87,8 +90,12 @@ class Entity {
   }
   getId() {
     const rand = Math.random().toString();
-    const id = "XX" + new Date().getTime() + rand.split(".")[1];
+    const id = "CSSID" + new Date().getTime() + rand.split(".")[1];
     this._id = id;
+  }
+  createUUID(){
+    const rand = Math.random().toString();
+    this.UUID = "UUID" + new Date().getTime() + rand.split(".")[1];
   }
   centerEntity({willCenter, tregetObject}) {
     const { centerX, centerY } = center(tregetObject);
@@ -139,14 +146,18 @@ class Entity {
     }
     if (this.move == "idle")return;
     this.collisionTable.table.forEach((objectType, index)=>{
-      result.collisions.forEach((entity, index)=>{
-        if (entity.type == objectType){
-          stop = false;
-        }else{
-          stop = true;
-          otherStops = true;
-        }
-      })
+      if (objectType == "all"){
+        stop = false;
+      }else{
+        result.collisions.forEach((entity, index)=>{
+          if (entity.type == objectType){
+            stop = false;
+          }else{
+            stop = true;
+            otherStops = true;
+          }
+        })
+      }
     })
     if (otherStops)stop = true;
     if(stop){

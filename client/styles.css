@@ -11,12 +11,23 @@
   position: absolute;
 }
 .player {
+  border-style: dashed;
+  z-index: 10;
+  position: absolute;
+  width: 40px;
+  height: 100px;
+  background: red;
+}
+.block {
+  z-index: 1;
+  border-style: solid;
   position: absolute;
   width: 40px;
   height: 100px;
   background: red;
 }
 .bullet {
+  z-index: 11;
   position: absolute;
   width: 5px;
   height: 5px;

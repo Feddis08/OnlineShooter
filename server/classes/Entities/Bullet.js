@@ -8,7 +8,7 @@ class Bullet extends Entity {
     const type = "bullet";
     super(id, name, type, x, y, 20, 20, "blue", shootDirection);
     this.player = player;
-    this.collisionTable.table = ["air", "bullet"];
+    this.collisionTable.table = ["all"];
     users.push(this);
   }
   personalTick() {

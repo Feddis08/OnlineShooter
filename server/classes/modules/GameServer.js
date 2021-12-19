@@ -1,4 +1,5 @@
 let data = require("./Data")
+let DefaultMap = require("../maps/default.js")
 let users = data.users;
 let onlinePlayers = data.onlinePlayers;
 var pmessage = {
@@ -18,6 +19,8 @@ class GameServer {
         setInterval(() => {
             this.server();
         }, 10);
+        const map = new DefaultMap(true);
+        this.broadcast(users);
     };
     findUser(name, isId){
         users.forEach((user, index)=>{
@@ -84,6 +87,10 @@ class GameServer {
         this.clock();
         users.forEach((user, index) => {
             //this.update(user);
+            if (user.new == true){
+                this.send(user, Data.blocks);
+                user.new = false;
+            }
             user.tick();
             user.actionHandling(user.action);
             let viewPort = user.findViewport();
@@ -91,6 +98,7 @@ class GameServer {
                 if (user.isPlayer) {
                     viewPort.change = false;
                     this.send(viewPort.from, viewPort.render);
+
                 }
             }
             if (user.lastMove !== user.move || user.lastAction !== user.action){

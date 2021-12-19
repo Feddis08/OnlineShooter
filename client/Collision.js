@@ -1,4 +1,4 @@
-var checkMove = (entity) => {
+var checkMove = (entity, all) => {
   // clone player pos w/o changing object
   const direction = entity.move;
   let me = {
@@ -34,7 +34,7 @@ var checkMove = (entity) => {
     saveLastDirection();
   }
 
-  var result = collisionDetect(me);
+  var result = collisionDetect(me, all);
   return {
     collision: result.collision,
     collisions: result.collisions,
@@ -43,28 +43,52 @@ var checkMove = (entity) => {
   };
 };
 
-var collisionDetect = (me) => {
+var collisionDetect = (me, all) => {
   let collision = false;
   let collisions = [];
-  Server.objects.forEach((otherUser, index) => {
-    if (!(otherUser.id == me.id)) {
-      const other = {
-        x1: otherUser.x,
-        y1: otherUser.y,
-        x2: otherUser.x + otherUser.width,
-        y2: otherUser.y + otherUser.height,
-      };
-      if (me.here.x2 >= other.x1 && me.here.x1 <= other.x2) {
-        //.log("start3");
-        if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
-          //.log(me.name, ":collision with:", otherUser.name);
-          collisions.push(otherUser);
-          collision = otherUser;
+  if (all){
+    Server.allEntities.forEach((otherUser, index) => {
+      if (!(otherUser.id == me.id)) {
+        const other = {
+          x1: otherUser.x,
+          y1: otherUser.y,
+          x2: otherUser.x + otherUser.width,
+          y2: otherUser.y + otherUser.height,
+        };
+        if (me.here.x2 >= other.x1 && me.here.x1 <= other.x2) {
+          //.log("start3");
+          if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
+            //.log(me.name, ":collision with:", otherUser.name);
+            collisions.push(otherUser);
+            collision = otherUser;
+          }
         }
-      }
 
-    }
-  });
-  const collisionsString = collisions.map( coll => coll.id ).sort().join( "-" );
-  return {collision, collisions, collisionsString};
+      }
+    });
+    const collisionsString = collisions.map( coll => coll.id ).sort().join( "-" );
+    return {collision, collisions, collisionsString};
+  }else{
+    Server.objects.forEach((otherUser, index) => {
+      if (!(otherUser.id == me.id)) {
+        const other = {
+          x1: otherUser.x,
+          y1: otherUser.y,
+          x2: otherUser.x + otherUser.width,
+          y2: otherUser.y + otherUser.height,
+        };
+        if (me.here.x2 >= other.x1 && me.here.x1 <= other.x2) {
+          //.log("start3");
+          if (me.here.y1 <= other.y2 && other.y1 <= me.here.y2) {
+            //.log(me.name, ":collision with:", otherUser.name);
+            collisions.push(otherUser);
+            collision = otherUser;
+          }
+        }
+
+      }
+    });
+    const collisionsString = collisions.map( coll => coll.id ).sort().join( "-" );
+    return {collision, collisions, collisionsString};
+  }
 };
